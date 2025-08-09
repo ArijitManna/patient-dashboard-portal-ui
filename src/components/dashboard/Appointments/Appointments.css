@@ -1,0 +1,135 @@
+.appointment-item {
+  padding: 20px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.appointment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.doctor-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.doctor-info img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.doctor-info h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 2px;
+}
+
+.doctor-info span {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.appointment-duration {
+  background: #f59e0b;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.appointment-details {
+  margin-bottom: 16px;
+}
+
+.appointment-date {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
+
+.appointment-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.appointment-info span {
+  font-size: 0.8rem;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.appointment-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-outline, .btn-primary {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  border: none;
+}
+
+.btn-outline {
+  background: transparent;
+  color: #1e40af;
+  border: 1px solid #1e40af;
+}
+
+.btn-outline:hover {
+  background: #1e40af;
+  color: white;
+}
+
+.btn-primary {
+  background: #1e40af;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #1e3a8a;
+}
+
+/* Ensure proper header layout for appointments */
+.appointments-card .card-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+}
+
+.appointments-card .card-header h3 {
+  font-size: 0.95rem !important;
+  margin: 0 !important;
+  flex-shrink: 0 !important;
+  max-width: 70%;
+}
+
+.appointments-card .card-nav {
+  flex-shrink: 0 !important;
+  max-width: 30%;
+  display: flex;
+  gap: 8px;
+}
+
+.appointments-card .nav-btn {
+  width: 28px !important;
+  height: 28px !important;
+  font-size: 0.7rem !important;
+}

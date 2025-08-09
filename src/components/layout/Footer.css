@@ -1,0 +1,164 @@
+.footer {
+  background: #1f2937;
+  border-top: 1px solid #374151;
+  padding: 20px 0;
+  margin-top: 40px;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.footer-left p {
+  color: #d1d5db;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.footer-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.footer-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-link {
+  color: #d1d5db;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.footer-link:hover {
+  color: #60a5fa;
+}
+
+.footer-separator {
+  color: #d1d5db;
+  font-size: 0.9rem;
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+}
+
+.payment-methods {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.payment-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid #4b5563;
+  background: white;
+  min-width: 40px;
+  height: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.payment-icon.visa {
+  color: #1a1f71;
+  background: linear-gradient(135deg, #1a1f71, #0066b2);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  border-color: #1a1f71;
+}
+
+.payment-icon.amex {
+  color: #006fcf;
+  border-color: #006fcf;
+}
+
+.payment-icon.discover {
+  color: #ff6000;
+  border-color: #ff6000;
+}
+
+.payment-icon.mastercard {
+  color: #eb001b;
+  border-color: #eb001b;
+}
+
+.payment-icon.stripe {
+  color: #635bff;
+  border-color: #635bff;
+  text-transform: lowercase;
+  font-style: italic;
+}
+
+.payment-icon.paypal {
+  color: #003087;
+  border-color: #003087;
+  text-transform: none;
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+  
+  .footer-center {
+    order: 2;
+  }
+  
+  .footer-right {
+    order: 3;
+  }
+  
+  .payment-methods {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .footer-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    padding: 16px 0;
+  }
+  
+  .footer-content {
+    padding: 0 16px;
+  }
+  
+  .footer-links {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .footer-separator {
+    display: none;
+  }
+}
