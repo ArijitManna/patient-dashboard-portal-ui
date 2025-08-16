@@ -31,7 +31,11 @@ function App() {
               <div className="container">
                 <div className="content-wrapper">
                   {/* Left Sidebar - Patient Profile (New version) */}
-                  <SidebarV2 activeTab={activeTab} setActiveTab={setActiveTab} />
+                  <SidebarV2
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                    onLogout={() => setCurrentPage('login')}
+                  />
 
                   {/* Right Main Dashboard */}
                   <Dashboard activeTab={activeTab} />

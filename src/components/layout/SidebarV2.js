@@ -2,7 +2,7 @@ import React from 'react';
 import './SidebarV2.css';
 import { patientData } from '../../data/mockData';
 
-const SidebarV2 = ({ activeTab, setActiveTab }) => {
+const SidebarV2 = ({ activeTab, setActiveTab, onLogout }) => {
   return (
     <div className="sidebar-v2">
       <div className="v2-banner">
@@ -49,7 +49,8 @@ const SidebarV2 = ({ activeTab, setActiveTab }) => {
           <span>Medical Records</span>
         </button>
 
-        <button className="v2-item">
+        <button className="v2-item" onClick={onLogout}
+        >
           <i className="fa-solid fa-sign-out-alt"></i>
           <span>Logout</span>
         </button>
