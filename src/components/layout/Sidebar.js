@@ -6,19 +6,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
   return (
     <div className="sidebar">
       {/* Dark Blue Background Section with Pattern */}
-      <div className="sidebar-bg">
-        <div className="bg-pattern">
-          <div className="pattern-icon">❤️</div>
-          <div className="pattern-icon">🏥</div>
-          <div className="pattern-icon">🔬</div>
-          <div className="pattern-icon">👨‍⚕️</div>
-          <div className="pattern-icon">🩹</div>
-          <div className="pattern-icon">🩺</div>
-          <div className="pattern-icon">💊</div>
-          <div className="pattern-icon">👩‍⚕️</div>
-          <div className="pattern-icon">⏰</div>
-        </div>
-      </div>
+      <div className="sidebar-bg"></div>
       
       {/* Patient Profile Section */}
       <div className="patient-profile">

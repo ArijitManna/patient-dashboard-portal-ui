@@ -7,7 +7,7 @@
   top: 100px;
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  height: 500px;
+  height: auto;
   display: flex;
   flex-direction: column;
 }
@@ -19,6 +19,8 @@
   background: #1e40af;
   overflow: hidden;
   z-index: 1;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
 }
 
 .bg-pattern {
@@ -45,16 +47,23 @@
 /* Patient Profile Section */
 .patient-profile {
   position: relative;
-  padding: 0 24px 20px;
+  padding: 180px 24px 28px;
   text-align: center;
   background: white;
   z-index: 2;
   flex: 1;
 }
 
+/* Ensure no stray overlay from previous styles */
+.patient-profile::before {
+  content: none !important;
+}
+
 .profile-image-container {
-  position: relative;
-  margin-top: -100px;
+  position: absolute;
+  top: -80px;
+  left: 50%;
+  transform: translateX(-50%);
   margin-bottom: 20px;
   z-index: 3;
 }
@@ -192,7 +201,7 @@
     position: static;
     margin-bottom: 20px;
     border-radius: 12px;
-    height: 450px;
+    height: auto;
   }
   
   .sidebar-bg {
@@ -200,12 +209,12 @@
   }
   
   .profile-image-container {
-    margin-top: -90px;
+    top: -60px;
   }
   
   .profile-image {
-    width: 100px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
   }
   
   .patient-name {
@@ -230,7 +239,7 @@
 @media (max-width: 480px) {
   .sidebar {
     padding: 0;
-    height: 400px;
+    height: auto;
   }
   
   .sidebar-bg {
@@ -238,11 +247,11 @@
   }
   
   .profile-image-container {
-    margin-top: -80px;
+    top: -50px;
   }
   
   .patient-profile {
-    padding: 0 16px 16px;
+    padding: 84px 16px 16px;
   }
   
   .sidebar-nav {

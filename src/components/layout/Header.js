@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Header.css';
 
-const Header = () => {
+const Header = ({ onPageChange }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -48,6 +48,20 @@ const Header = () => {
             <button className="header-icon notification-icon" title="Messages">
               <i className="fa-solid fa-comment-dots"></i>
               <span className="notification-dot green"></span>
+            </button>
+            <button 
+              className="header-icon login-btn" 
+              title="Login"
+              onClick={() => onPageChange && onPageChange('login')}
+            >
+              <i className="fa-solid fa-sign-in-alt"></i>
+            </button>
+            <button 
+              className="header-icon register-btn" 
+              title="Registration"
+              onClick={() => onPageChange && onPageChange('registration')}
+            >
+              <i className="fa-solid fa-user-plus"></i>
             </button>
             <div className="user-menu" onClick={toggleDropdown} ref={dropdownRef}>
               <img 

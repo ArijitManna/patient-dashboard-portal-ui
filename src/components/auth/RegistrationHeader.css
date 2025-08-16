@@ -1,0 +1,188 @@
+.registration-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  height: 70px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 70px;
+}
+
+/* Logo Styling */
+.logo h2 {
+  display: flex;
+  align-items: center;
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+
+.logo-text {
+  color: #1e40af;
+}
+
+.stethoscope-u {
+  color: #1e40af;
+  position: relative;
+  display: inline-block;
+  margin: 0 1px;
+}
+
+.stethoscope-u::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  background: #1e40af;
+  border-radius: 50%;
+  z-index: -1;
+}
+
+.stethoscope-u::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: white;
+  border-radius: 50%;
+  z-index: -1;
+}
+
+/* Header Actions */
+.header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  height: 70px;
+}
+
+.signup-btn,
+.register-btn {
+  height: 32px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  letter-spacing: -0.025em;
+  min-width: 80px;
+  white-space: nowrap;
+  line-height: 1;
+  margin: 0;
+  position: relative;
+  top: 0;
+  transform: translateY(0);
+}
+
+.signup-btn i,
+.register-btn i {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  line-height: 1;
+  width: 12px;
+  height: 12px;
+  margin: 0;
+  padding: 0;
+}
+
+.signup-btn {
+  background: #1e40af;
+  color: white;
+}
+
+.signup-btn:hover {
+  background: #1e3a8a;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
+}
+
+.register-btn {
+  background: #012047;
+  color: white;
+}
+
+.register-btn:hover {
+  background: #001a3a;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(1, 32, 71, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header-container {
+    padding: 0 16px;
+  }
+  
+  .logo h2 {
+    font-size: 1.1rem;
+  }
+  
+  .signup-btn,
+  .register-btn {
+    height: 28px;
+    padding: 0 10px;
+    font-size: 0.75rem;
+    gap: 3px;
+    min-width: 70px;
+  }
+  
+  .header-actions {
+    gap: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .registration-header {
+    padding: 6px 0;
+  }
+  
+  .header-container {
+    padding: 0 12px;
+  }
+  
+  .logo h2 {
+    font-size: 1rem;
+  }
+  
+  .header-actions {
+    gap: 4px;
+  }
+  
+  .signup-btn,
+  .register-btn {
+    height: 26px;
+    padding: 0 8px;
+    font-size: 0.7rem;
+    gap: 2px;
+    min-width: 60px;
+  }
+}

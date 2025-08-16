@@ -1,0 +1,114 @@
+.sidebar-v2 {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  color: #012047;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+}
+
+/* 1) Top banner background */
+.v2-banner {
+  position: relative;
+  height: 180px;
+  background: #0f2ea8;
+}
+
+/* 2) 50% avatar inside banner (centered) */
+.v2-avatar {
+  position: absolute;
+  left: 50%;
+  bottom: -60px;
+  transform: translateX(-50%);
+  width: 140px;
+  height: 140px;
+}
+
+.v2-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 6px solid #fff;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+.v2-badge {
+  position: absolute;
+  right: 10px;
+  bottom: 14px;
+  width: 26px;
+  height: 26px;
+  background: #10b981;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #fff;
+}
+
+/* 3) Profile area below banner */
+.v2-profile {
+  padding: 80px 24px 20px; /* accounts for avatar overlap */
+  text-align: center;
+}
+
+.v2-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+}
+
+.v2-id {
+  margin: 0 0 6px 0;
+  color: #6b7280;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.v2-details {
+  margin: 0;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  color: #012047;
+}
+
+.v2-dot { font-weight: 700; }
+
+/* 4) Navigation menu */
+.v2-nav {
+  padding: 12px 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.v2-item {
+  background: none;
+  border: none;
+  color: #6b7280;
+  padding: 12px 14px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  font-weight: 500;
+  font-size: 0.98rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.v2-item i { width: 20px; text-align: center; }
+.v2-item:hover { background: #f3f4f6; color: #0f2ea8; transform: translateX(4px); }
+.v2-item.active { background: #0E82FD; color: #fff; box-shadow: 0 4px 12px rgba(14,130,253,0.3); transform: translateX(4px); }
+
+@media (max-width: 768px) {
+  .v2-banner { height: 170px; }
+  .v2-avatar { width: 120px; height: 120px; bottom: -54px; }
+  .v2-profile { padding-top: 72px; }
+}
+
+

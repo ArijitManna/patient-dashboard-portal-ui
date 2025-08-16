@@ -1,0 +1,617 @@
+.login-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  padding-top: 90px; /* Account for fixed header */
+}
+
+.login-container {
+  display: grid;
+  grid-template-columns: 45% 55%;
+  max-width: 800px;
+  width: 100%;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+  min-height: 450px;
+}
+
+/* Left Side - Patient Diagnosis Illustration */
+.illustration-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.illustration-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.patient-diagnosis-illustration {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* AI-Generated Medical Elements */
+.diagnosis-elements {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Patient Profile Card */
+.patient-profile {
+  position: absolute;
+  width: 140px;
+  height: 90px;
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  top: 12%;
+  left: 10%;
+  animation: float 8s ease-in-out infinite;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.patient-profile::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: 20px;
+  height: 20px;
+  background: #667eea;
+  border-radius: 50%;
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.patient-profile::after {
+  content: '';
+  position: absolute;
+  top: 45px;
+  left: 15px;
+  right: 15px;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 2px;
+}
+
+/* OPD Schedule Card */
+.opd-schedule {
+  position: absolute;
+  width: 110px;
+  height: 130px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  top: 20%;
+  right: 15%;
+  transform: rotate(-3deg);
+  animation: float 7s ease-in-out infinite reverse;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.opd-schedule::before {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  height: 4px;
+  background: #00b894;
+  border-radius: 2px;
+}
+
+.opd-schedule::after {
+  content: '';
+  position: absolute;
+  top: 25px;
+  left: 12px;
+  right: 12px;
+  height: 4px;
+  background: #fdcb6e;
+  border-radius: 2px;
+}
+
+/* Diagnostic Scanner */
+.diagnostic-scanner {
+  position: absolute;
+  width: 160px;
+  height: 70px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  bottom: 35%;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: slide 6s ease-in-out infinite;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.diagnostic-scanner::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  height: 2px;
+  background: linear-gradient(90deg, #74b9ff, #0984e3);
+  border-radius: 1px;
+  animation: scan 4s ease-in-out infinite;
+}
+
+/* Medical Records */
+.medical-records {
+  position: absolute;
+  width: 90px;
+  height: 110px;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 10px;
+  bottom: 18%;
+  left: 12%;
+  animation: float 9s ease-in-out infinite;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.medical-records::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  height: 3px;
+  background: #e17055;
+  border-radius: 2px;
+}
+
+.medical-records::after {
+  content: '';
+  position: absolute;
+  top: 22px;
+  left: 10px;
+  right: 10px;
+  height: 3px;
+  background: #00b894;
+  border-radius: 2px;
+}
+
+/* AI Assistant */
+.ai-assistant {
+  position: absolute;
+  width: 120px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  bottom: 25%;
+  right: 10%;
+  animation: float 8.5s ease-in-out infinite reverse;
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.ai-assistant::before {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  width: 16px;
+  height: 16px;
+  background: #a29bfe;
+  border-radius: 50%;
+  animation: pulse 2.5s ease-in-out infinite;
+}
+
+.ai-assistant::after {
+  content: '';
+  position: absolute;
+  top: 40px;
+  left: 15px;
+  right: 15px;
+  height: 2px;
+  background: linear-gradient(90deg, #a29bfe, #6c5ce7);
+  border-radius: 1px;
+}
+
+/* Floating Particles */
+.floating-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  animation: float-particle 10s ease-in-out infinite;
+}
+
+.floating-particle:nth-child(1) {
+  top: 20%;
+  left: 25%;
+  animation-delay: 0s;
+}
+
+.floating-particle:nth-child(2) {
+  top: 35%;
+  right: 30%;
+  animation-delay: 2s;
+}
+
+.floating-particle:nth-child(3) {
+  bottom: 40%;
+  left: 35%;
+  animation-delay: 4s;
+}
+
+.floating-particle:nth-child(4) {
+  bottom: 25%;
+  right: 25%;
+  animation-delay: 6s;
+}
+
+@keyframes heartbeat {
+  0%, 100% { transform: scaleX(1); }
+  50% { transform: scaleX(1.2); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-15px); }
+}
+
+@keyframes slide {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-10px); }
+}
+
+@keyframes scan {
+  0%, 100% { opacity: 0.6; transform: scaleX(1); }
+  50% { opacity: 1; transform: scaleX(1.1); }
+}
+
+@keyframes float-particle {
+  0%, 100% { 
+    transform: translateY(0px) translateX(0px);
+    opacity: 0.3;
+  }
+  25% { 
+    transform: translateY(-20px) translateX(10px);
+    opacity: 0.8;
+  }
+  50% { 
+    transform: translateY(-10px) translateX(-5px);
+    opacity: 0.5;
+  }
+  75% { 
+    transform: translateY(-15px) translateX(15px);
+    opacity: 0.7;
+  }
+}
+
+/* Form Section */
+.form-section {
+  padding: 40px 30px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-form {
+  width: 100%;
+  max-width: 300px;
+}
+
+.form-header {
+  text-align: left;
+  margin-bottom: 28px;
+}
+
+.form-header h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* Form Groups */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #1a202c;
+  font-size: 0.85rem;
+  letter-spacing: -0.025em;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  background: white;
+  color: #1a202c;
+  font-weight: 400;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-group input::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+/* Password Header */
+.password-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.forgot-password {
+  color: #667eea;
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.forgot-password:hover {
+  color: #5a67d8;
+  text-decoration: underline;
+}
+
+/* Password Input */
+.password-input {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+}
+
+/* Checkbox Group */
+.checkbox-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.checkbox-item input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+  accent-color: #667eea;
+}
+
+.checkbox-item label {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+}
+
+/* Sign In Button */
+.signin-btn {
+  width: 100%;
+  padding: 12px 18px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  letter-spacing: -0.025em;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+}
+
+.signin-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.signin-btn:active {
+  transform: translateY(0);
+}
+
+/* Separator */
+.separator {
+  text-align: center;
+  margin: 24px 0;
+  position: relative;
+}
+
+.separator::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+.separator span {
+  background: white;
+  padding: 0 12px;
+  color: #6b7280;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* Social Login */
+.social-login {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.google-btn,
+.facebook-btn {
+  width: 100%;
+  padding: 12px 18px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
+  color: #374151;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.google-btn:hover,
+.facebook-btn:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.google-btn i {
+  color: #ea4335;
+  font-size: 1rem;
+}
+
+.facebook-btn i {
+  color: #1877f2;
+  font-size: 1rem;
+}
+
+/* Error Message */
+.error-message {
+  color: #dc2626;
+  font-size: 0.75rem;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .login-container {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+    min-height: auto;
+  }
+  
+  .illustration-section {
+    display: none;
+  }
+  
+  .form-section {
+    padding: 40px 30px;
+  }
+  
+  .login-form {
+    max-width: 400px;
+  }
+  
+  .form-header h1 {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-page {
+    padding: 10px;
+    padding-top: 90px;
+  }
+  
+  .login-container {
+    border-radius: 12px;
+  }
+  
+  .form-section {
+    padding: 25px 20px;
+  }
+  
+  .form-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .form-group input {
+    padding: 12px 14px;
+    font-size: 0.95rem;
+  }
+  
+  .signin-btn {
+    padding: 14px 18px;
+    font-size: 1rem;
+  }
+  
+  .google-btn,
+  .facebook-btn {
+    padding: 14px 18px;
+    font-size: 0.95rem;
+  }
+}

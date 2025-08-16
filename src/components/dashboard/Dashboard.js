@@ -5,7 +5,39 @@ import Appointments from './Appointments/Appointments';
 import Dependents from './Dependents/Dependents';
 import './Dashboard.css';
 
-const Dashboard = () => {
+const Dashboard = ({ activeTab }) => {
+  const renderContent = () => {
+    switch (activeTab) {
+      case 'appointments':
+        return (
+          <div className="main-content-container">
+            <Appointments />
+          </div>
+        );
+      case 'medical-records':
+        return (
+          <div className="main-content-container">
+            <HealthRecords />
+          </div>
+        );
+      default:
+        return (
+          <div className="main-content-container">
+            <HealthRecords />
+            <div className="bottom-cards">
+              <div className="notifications-column">
+                <Notifications />
+              </div>
+              <div className="appointments-dependents-column">
+                <Appointments />
+                <Dependents />
+              </div>
+            </div>
+          </div>
+        );
+    }
+  };
+
   return (
     <div className="dashboard">
       <div className="dashboard-header">
@@ -16,23 +48,7 @@ const Dashboard = () => {
           <i className="fa-solid fa-chevron-down"></i>
         </div>
       </div>
-
-      {/* Main Content Container with Border */}
-      <div className="main-content-container">
-        {/* Health Records Card */}
-        <HealthRecords />
-
-        {/* Bottom Row Cards */}
-        <div className="bottom-cards">
-          <div className="notifications-column">
-            <Notifications />
-          </div>
-          <div className="appointments-dependents-column">
-            <Appointments />
-            <Dependents />
-          </div>
-        </div>
-      </div>
+      {renderContent()}
     </div>
   );
 };
