@@ -1,412 +1,266 @@
+/* Top bar background for registration header */
+.registration-header {
+  background: url('/public/top-bar.jpg') center center/cover no-repeat;
+  border-radius: 6px;
+  padding: 10px 0;
+  position: relative;
+}
+/* Consistent label style for registration form */
+.registration-label {
+  color: #d7e0e2 !important; /* User-locked label color */
+  font-weight: 700;
+  font-size: 13px;
+  margin-bottom: 2px;
+  letter-spacing: 0.5px;
+  opacity: 1;
+  display: block;
+}
+/* Add red asterisk for required fields */
+.form-group label.required::after {
+  content: ' *';
+  color: #e74c3c;
+  font-weight: bold;
+}
+/* --- Appointment Form Overlay Styles (for compact, professional look) --- */
+.appointment-bg {
+  /* To use a custom background image, place your .webp file in the public directory (e.g., public/registration-bg.webp) */
+  background: url('/public/registration-bg.webp') center center/cover no-repeat, linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.appointment-overlay {
+  background: rgba(10, 40, 70, 0.85);
+  padding: 40px 50px;
+  border-radius: 10px;
+  width: 700px;
+  max-width: 95vw;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  margin-top: 80px;
+}
+
+.appointment-title {
+  color: #fff;
+  text-align: center;
+  letter-spacing: 4px;
+  font-size: 2.2rem;
+  margin-bottom: 20px;
+}
+
+.appointment-form h2 {
+  color: #fff;
+  text-align: center;
+  margin-bottom: 30px;
+  letter-spacing: 2px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 30px;
+  margin-bottom: 30px;
+}
+
+
+.form-grid input,
+.form-grid select {
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 3px;
+  background: #1e3550;
+  color: #fff;
+  font-size: 1rem;
+  margin-top: 3px;
+}
+
+.form-grid input:focus,
+.form-grid select:focus {
+  outline: 2px solid #ffa500;
+}
+
+.appointment-btn {
+  width: 220px;
+  margin: 0 auto;
+  display: block;
+  background: #ffa500;
+  color: #fff;
+  border: none;
+  padding: 12px 0;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.appointment-btn:hover {
+  background: #ff8800;
+}
+/* Registration Page Styles - Clean Professional Design */
 .registration-page {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #f5f5f5;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
-  padding-top: 90px; /* Account for fixed header */
-}
-
-.registration-container {
-  display: grid;
-  grid-template-columns: 45% 55%;
-  max-width: 800px;
-  width: 100%;
-  background: white;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
-  min-height: 450px;
-}
-
-
-
-/* Left Side - Patient Diagnosis Illustration */
-.illustration-section {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 40px 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   position: relative;
-  overflow: hidden;
 }
 
-.illustration-content {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.patient-diagnosis-illustration {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* AI-Generated Medical Elements */
-.diagnosis-elements {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Patient Profile Card */
-.patient-profile {
-  position: absolute;
-  width: 140px;
-  height: 90px;
-  background: rgba(255, 255, 255, 0.18);
-  border-radius: 16px;
-  top: 12%;
-  left: 10%;
-  animation: float 8s ease-in-out infinite;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.patient-profile::before {
+/* Dark blue vertical bar on the left */
+.registration-page::before {
   content: '';
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  width: 20px;
-  height: 20px;
-  background: #667eea;
-  border-radius: 50%;
-  animation: pulse 3s ease-in-out infinite;
-}
-
-.patient-profile::after {
-  content: '';
-  position: absolute;
-  top: 45px;
-  left: 15px;
-  right: 15px;
-  height: 3px;
-  background: linear-gradient(90deg, #667eea, #764ba2);
-  border-radius: 2px;
-}
-
-/* OPD Schedule Card */
-.opd-schedule {
-  position: absolute;
-  width: 110px;
-  height: 130px;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 12px;
-  top: 20%;
-  right: 15%;
-  transform: rotate(-3deg);
-  animation: float 7s ease-in-out infinite reverse;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.opd-schedule::before {
-  content: '';
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  right: 12px;
-  height: 4px;
-  background: #00b894;
-  border-radius: 2px;
-}
-
-.opd-schedule::after {
-  content: '';
-  position: absolute;
-  top: 25px;
-  left: 12px;
-  right: 12px;
-  height: 4px;
-  background: #fdcb6e;
-  border-radius: 2px;
-}
-
-/* Diagnostic Scanner */
-.diagnostic-scanner {
-  position: absolute;
-  width: 160px;
-  height: 70px;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 20px;
-  bottom: 35%;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: slide 6s ease-in-out infinite;
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.diagnostic-scanner::before {
-  content: '';
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  right: 20px;
-  height: 2px;
-  background: linear-gradient(90deg, #74b9ff, #0984e3);
-  border-radius: 1px;
-  animation: scan 4s ease-in-out infinite;
-}
-
-/* Medical Records */
-.medical-records {
-  position: absolute;
-  width: 90px;
-  height: 110px;
-  background: rgba(255, 255, 255, 0.16);
-  border-radius: 10px;
-  bottom: 18%;
-  left: 12%;
-  animation: float 9s ease-in-out infinite;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.medical-records::before {
-  content: '';
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  right: 10px;
-  height: 3px;
-  background: #e17055;
-  border-radius: 2px;
-}
-
-.medical-records::after {
-  content: '';
-  position: absolute;
-  top: 22px;
-  left: 10px;
-  right: 10px;
-  height: 3px;
-  background: #00b894;
-  border-radius: 2px;
-}
-
-/* AI Assistant */
-.ai-assistant {
-  position: absolute;
-  width: 120px;
-  height: 100px;
-  background: rgba(255, 255, 255, 0.14);
-  border-radius: 18px;
-  bottom: 25%;
-  right: 10%;
-  animation: float 8.5s ease-in-out infinite reverse;
-  backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-}
-
-.ai-assistant::before {
-  content: '';
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  width: 16px;
-  height: 16px;
-  background: #a29bfe;
-  border-radius: 50%;
-  animation: pulse 2.5s ease-in-out infinite;
-}
-
-.ai-assistant::after {
-  content: '';
-  position: absolute;
-  top: 40px;
-  left: 15px;
-  right: 15px;
-  height: 2px;
-  background: linear-gradient(90deg, #a29bfe, #6c5ce7);
-  border-radius: 1px;
-}
-
-/* Floating Particles */
-.floating-particle {
-  position: absolute;
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 6px;
-  height: 6px;
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  animation: float-particle 10s ease-in-out infinite;
+  height: 100vh;
+  background: #1e3c72;
+  z-index: 1;
 }
 
-.floating-particle:nth-child(1) {
-  top: 20%;
-  left: 25%;
-  animation-delay: 0s;
-}
-
-.floating-particle:nth-child(2) {
-  top: 35%;
-  right: 30%;
-  animation-delay: 2s;
-}
-
-.floating-particle:nth-child(3) {
-  bottom: 40%;
-  left: 35%;
-  animation-delay: 4s;
-}
-
-.floating-particle:nth-child(4) {
-  bottom: 25%;
-  right: 25%;
-  animation-delay: 6s;
-}
-
-@keyframes heartbeat {
-  0%, 100% { transform: scaleX(1); }
-  50% { transform: scaleX(1.2); }
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-15px); }
-}
-
-@keyframes slide {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50% { transform: translateX(-50%) translateY(-10px); }
-}
-
-@keyframes scan {
-  0%, 100% { opacity: 0.6; transform: scaleX(1); }
-  50% { opacity: 1; transform: scaleX(1.1); }
-}
-
-@keyframes float-particle {
-  0%, 100% { 
-    transform: translateY(0px) translateX(0px);
-    opacity: 0.3;
-  }
-  25% { 
-    transform: translateY(-20px) translateX(10px);
-    opacity: 0.8;
-  }
-  50% { 
-    transform: translateY(-10px) translateX(-5px);
-    opacity: 0.5;
-  }
-  75% { 
-    transform: translateY(-15px) translateX(15px);
-    opacity: 0.7;
-  }
-}
-
-/* Form Section */
-.form-section {
-  padding: 40px 30px;
+/* Main Form Container */
+.registration-container {
   background: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.registration-form {
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 40px;
   width: 100%;
-  max-width: 300px;
+  max-width: 800px;
+  position: relative;
+  z-index: 2;
+  margin-left: 20px;
 }
 
-.form-row-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.required-indicator {
-  color: #dc2626;
-}
-
+/* Form Header */
 .form-header {
-  text-align: left;
-  margin-bottom: 28px;
+  margin-bottom: 30px;
+  border-radius: 6px;
+  padding: 10px 0;
+  position: relative;
 }
 
 .form-header h1 {
-  font-size: 1.4rem;
+  color: #e5ebf7 !important;
+  font-size: 24px;
   font-weight: 700;
-  color: #1a202c;
+  /* text-transform: uppercase; */
+  letter-spacing: 1px;
   margin: 0;
-  line-height: 1.2;
+}
+
+/* Form Content */
+.form-content {
+  width: 100%;
+}
+
+.registration-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Two Column Layout */
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+}
+
+.form-row-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+}
+
+.form-row-4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  gap: 20px;
 }
 
 /* Form Groups */
 .form-group {
-  margin-bottom: 20px;
+  position: relative;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 6px;
-  font-weight: 600;
-  color: #1a202c;
-  font-size: 0.85rem;
-  letter-spacing: -0.025em;
+  /* User-locked label color: #d7e0e2 */
+  color: #d7e0e2 !important;
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 1;
+}
+
+.form-group label::after {
+  content: '';
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
   padding: 10px 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 0.9rem;
+  background: #f8fafc;
+  border: 1px solid #b0b8c9;
+  border-radius: 4px;
+  color: #1a2636;
+  font-size: 15px;
+  font-weight: 400;
   transition: all 0.2s ease;
-  background: white;
-  color: #1a202c;
+  box-sizing: border-box;
+}
+
+.form-group input::placeholder {
+  color: #b0b8c9;
   font-weight: 400;
 }
 
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: #ffa500;
+  box-shadow: 0 0 0 2px rgba(255, 165, 0, 0.08);
 }
 
-.form-group input::placeholder {
-  color: #9ca3af;
-  font-weight: 400;
+.form-group input:hover,
+.form-group select:hover {
+  border-color: #bdc3c7;
 }
 
-/* Phone Input */
+/* Phone Input Styling */
 .phone-input {
   display: flex;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
-  overflow: hidden;
   background: white;
-  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.phone-input:focus-within {
+  border-color: #1e3c72;
+  box-shadow: 0 0 0 2px rgba(30, 60, 114, 0.1);
 }
 
 .country-prefix {
-  padding: 10px 12px;
-  background: #f8fafc;
-  color: #374151;
-  font-weight: 500;
-  font-size: 0.9rem;
-  border-right: 1px solid #d1d5db;
+  padding: 12px 16px;
+  background: #f8f9fa;
+  color: #2c3e50;
+  font-weight: 600;
+  font-size: 14px;
+  border-right: 1px solid #ddd;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
 }
 
 .phone-input input {
@@ -414,148 +268,148 @@
   border: none !important;
   border-radius: 0;
   background: white;
-  padding: 10px 14px;
+  padding: 12px 16px;
   box-shadow: none !important;
 }
 
-.phone-input:focus-within {
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-}
-
-/* Error Message */
-.error-message {
-  color: #dc2626;
-  font-size: 0.75rem;
-  margin-top: 4px;
-  font-weight: 500;
-}
-
-/* Password Input */
-.password-input {
+/* Date input with calendar icon */
+.form-group input[type="date"] {
   position: relative;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2395a5a6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  padding-right: 40px;
 }
 
-.password-toggle {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
+/* Select dropdowns with arrow */
+.form-group select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2395a5a6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6,9 12,15 18,9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  padding-right: 40px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+/* Error Messages */
+.error-message {
+  color: #e74c3c;
   background: none;
+  font-size: 12px;
+  margin-top: 2px;
+  margin-bottom: 0;
+  font-weight: 500;
+  padding: 0;
   border: none;
-  color: #9ca3af;
-  cursor: pointer;
-  font-size: 1rem;
-  padding: 4px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
 }
 
-.password-toggle:hover {
-  color: #667eea;
-  background: rgba(102, 126, 234, 0.1);
+.form-group input.invalid,
+.form-group select.invalid {
+  border-color: #e74c3c;
+  background: #f8fafc;
 }
 
-/* Sign Up Button */
+/* Submit Button */
 .signup-btn {
-  width: 100%;
-  padding: 12px 18px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #1e3c72;
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 0.95rem;
+  padding: 14px 28px;
+  border-radius: 6px;
+  font-size: 14px;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   cursor: pointer;
   transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 24px;
-  letter-spacing: -0.025em;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+  margin-top: 20px;
+  width: 100%;
+  max-width: 250px;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
 
 .signup-btn:hover {
+  background: #2a5298;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px rgba(30, 60, 114, 0.3);
 }
 
 .signup-btn:active {
   transform: translateY(0);
 }
 
+.signup-btn:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
 
+/* Loading State */
+.signup-btn.loading {
+  position: relative;
+  color: transparent;
+}
+
+.signup-btn.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 18px;
+  height: 18px;
+  border: 2px solid transparent;
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .registration-container {
-    grid-template-columns: 1fr;
-    max-width: 500px;
-    min-height: auto;
+    padding: 30px 20px;
+    margin: 10px;
   }
-  
-  .illustration-section {
-    display: none;
-  }
-  
-  .form-section {
-    padding: 40px 30px;
-  }
-  
-  .registration-form {
-    max-width: 400px;
-  }
-  .form-row-2 { grid-template-columns: 1fr; }
   
   .form-header h1 {
-    font-size: 1.6rem;
+    font-size: 20px;
+  }
+  
+  .form-row-2,
+  .form-row-3,
+  .form-row-4 {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .signup-btn {
+    max-width: 100%;
   }
 }
 
 @media (max-width: 480px) {
-  .registration-page {
-    padding: 10px;
-    padding-top: 90px;
-  }
-  
   .registration-container {
-    border-radius: 12px;
-  }
-  
-  .form-section {
-    padding: 25px 20px;
+    padding: 20px 15px;
   }
   
   .form-header h1 {
-    font-size: 1.5rem;
+    font-size: 18px;
   }
   
   .form-group input,
   .form-group select {
-    padding: 12px 14px;
-    font-size: 0.95rem;
+    padding: 10px 12px;
+    font-size: 13px;
   }
-  
-  .phone-input {
-    flex-direction: row;
-    border: 1px solid #d1d5db;
-  }
-  
-  .phone-input input {
-    border: none !important;
-    box-shadow: none !important;
-  }
-  
-  .country-prefix {
-    width: auto;
-    border-right: 1px solid #d1d5db;
-  }
-  
-  .signup-btn {
-    padding: 14px 18px;
-    font-size: 1rem;
-  }
-  .form-row-2 { grid-template-columns: 1fr; gap: 10px; }
 }

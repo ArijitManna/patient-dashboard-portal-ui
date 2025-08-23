@@ -1,28 +1,131 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
+import { registerPatient, getCountries, getStates, getDistricts, getCities } from '../../services/api';
+import { sendOtpEmail, logOtpToConsole } from '../../services/emailService';
+import OtpValidation from './OtpValidation';
 import './Registration.css';
-
-const countries = [
-  { id: 1, code: 'IND', name: 'India', states: ['Andhra Pradesh', 'Karnataka', 'Maharashtra', 'Tamil Nadu', 'West Bengal'] },
-  { id: 2, code: 'USA', name: 'United States', states: ['California', 'Florida', 'New York', 'Texas', 'Washington'] },
-];
 
 const Registration = () => {
   const [formData, setFormData] = useState({
-    name: '',
     firstName: '',
+    middleName: '',
     lastName: '',
     age: '',
+    dob: '',
     gender: '',
-    countryId: 1,
-    countryCode: 'IND',
-    state: '',
-    email: '',
-    phone: ''
+    countryCode: '+91',
+    mobileNumber: '',
+    emailID: '',
+    countryID: '',
+    stateID: '',
+    districtID: '',
+    cityID: '',
+    createdBy: 'Patient'
   });
-  const [phoneError, setPhoneError] = useState('');
-  const [errors, setErrors] = useState({});
 
-  const selectedCountry = useMemo(() => countries.find(c => c.id === Number(formData.countryId)) || countries[0], [formData.countryId]);
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [cities, setCities] = useState([]);
+  
+  // Debug logging for countries state
+  useEffect(() => {
+    console.log('Countries state updated:', countries);
+  }, [countries]);
+
+  // Debug logging for states state
+  useEffect(() => {
+    console.log('States state updated:', states);
+  }, [states]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [pid, setPid] = useState('');
+  const [errors, setErrors] = useState({});
+  const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [phoneError, setPhoneError] = useState('');
+
+  // Load countries on component mount
+  useEffect(() => {
+    loadCountries();
+  }, []);
+
+  // Load states when country changes
+  useEffect(() => {
+    console.log('Country changed to:', formData.countryID);
+    if (formData.countryID) {
+      loadStates(formData.countryID);
+    }
+  }, [formData.countryID]);
+
+  // Load districts when state changes
+  useEffect(() => {
+    console.log('State changed to:', formData.stateID);
+    if (formData.stateID) {
+      loadDistricts(formData.stateID);
+    }
+  }, [formData.stateID]);
+
+  // Load cities when district changes
+  useEffect(() => {
+    if (formData.districtID) {
+      loadCities(formData.districtID);
+    }
+  }, [formData.districtID]);
+
+  const loadCountries = async () => {
+    try {
+      const response = await getCountries();
+      console.log('Countries API response:', response.data);
+      // Extract the actual countries array from the API response
+      const countriesData = response.data.data || response.data || [];
+      console.log('Extracted countries:', countriesData);
+      setCountries(countriesData);
+    } catch (error) {
+      console.error('Error loading countries:', error);
+    }
+  };
+
+  const loadStates = async (countryId) => {
+    try {
+      const response = await getStates(countryId);
+      console.log('States API response:', response.data);
+      // Extract the actual states array from the API response
+      const statesData = response.data.data || response.data || [];
+      console.log('Extracted states:', statesData);
+      setStates(statesData);
+      setFormData(prev => ({ ...prev, stateID: '', districtID: '', cityID: '' }));
+    } catch (error) {
+      console.error('Error loading states:', error);
+    }
+  };
+
+  const loadDistricts = async (stateId) => {
+    try {
+      const response = await getDistricts(stateId);
+      console.log('Districts API response:', response.data);
+      // Extract the actual districts array from the API response
+      const districtsData = response.data.data || response.data || [];
+      console.log('Extracted districts:', districtsData);
+      setDistricts(districtsData);
+      setFormData(prev => ({ ...prev, districtID: '', cityID: '' }));
+    } catch (error) {
+      console.error('Error loading districts:', error);
+    }
+  };
+
+  const loadCities = async (districtId) => {
+    try {
+      const response = await getCities(districtId);
+      console.log('Cities API response:', response.data);
+      // Extract the actual cities array from the API response
+      const citiesData = response.data.data || response.data || [];
+      console.log('Extracted cities:', citiesData);
+      setCities(citiesData);
+      setFormData(prev => ({ ...prev, cityID: '' }));
+    } catch (error) {
+      console.error('Error loading cities:', error);
+    }
+  };
 
   const validatePhoneNumber = (phone) => {
     const phoneRegex = /^[6-9]\d{9}$/;
@@ -31,12 +134,14 @@ const Registration = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    console.log(`Field changed: ${name} = ${value}`);
+    
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
 
-    if (name === 'phone') {
+    if (name === 'mobileNumber') {
       if (value.length > 0 && !validatePhoneNumber(value)) {
         setPhoneError('Please enter a valid 10-digit Indian mobile number');
       } else {
@@ -44,236 +149,238 @@ const Registration = () => {
       }
     }
 
-    if (name === 'countryId') {
-      const country = countries.find(c => c.id === Number(value));
-      setFormData(prev => ({ ...prev, countryCode: country?.code || '', state: '' }));
+    // Clear errors when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
     }
   };
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Name is required';
     if (!formData.firstName.trim()) newErrors.firstName = 'First Name is required';
     if (!formData.lastName.trim()) newErrors.lastName = 'Last Name is required';
     if (!formData.age || Number(formData.age) <= 0) newErrors.age = 'Valid age is required';
+    if (!formData.dob) newErrors.dob = 'Date of Birth is required';
     if (!formData.gender) newErrors.gender = 'Gender is required';
-    if (!formData.countryId) newErrors.countryId = 'Country is required';
-    if (!formData.state) newErrors.state = 'State is required';
-    if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Valid email is required';
-    if (!validatePhoneNumber(formData.phone)) newErrors.phone = 'Valid phone is required';
+    if (!formData.countryCode) newErrors.countryCode = 'Country Code is required';
+    if (!validatePhoneNumber(formData.mobileNumber)) newErrors.mobileNumber = 'Valid mobile number is required';
+    if (!formData.emailID || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emailID)) newErrors.emailID = 'Valid email is required';
+    if (!formData.countryID) newErrors.countryID = 'Country is required';
+    if (!formData.stateID) newErrors.stateID = 'State is required';
+    if (!formData.districtID) newErrors.districtID = 'District is required';
+    if (!formData.cityID) newErrors.cityID = 'City is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitAttempted(true);
     if (!validate()) return;
 
-    const payload = {
-      CountryCode: formData.countryCode,
-      Mobilenumber: formData.phone,
-      First_Name: formData.firstName,
-      Last_Name: formData.lastName,
-      Gender: formData.gender,
-      CountryID: Number(formData.countryId),
-      Age: Number(formData.age),
-      Created_by: 'Admin',
-      Full_Name: formData.name,
-      Email: formData.email,
-      State: formData.state,
-    };
+    setIsLoading(true);
 
-    console.log('Prepared payload for USP_Insert_Patient_Registration:', payload);
-    alert('Registration submitted successfully (mock). Check console for payload.');
+    try {
+      const response = await registerPatient(formData);
+      // Correctly extract PID and OTP from the nested response
+      if (response && response.data && response.data.data && response.data.data.generatedPID && response.data.data.generatedOTP) {
+        const patientId = response.data.data.generatedPID;
+        const otp = response.data.data.generatedOTP;
+        setPid(patientId);
+        const patientName = formData.firstName || 'there';
+        await sendOtpEmail(formData.emailID, otp, patientName);
+        logOtpToConsole(formData.emailID, otp);
+        setShowOtpModal(true);
+      } else {
+        setShowOtpModal(true);
+      }
+    } catch (error) {
+      // ...existing code...
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOtpSuccess = async (data) => {
+    setShowOtpModal(false);
+    // Send registration success email
+    try {
+      const patientName = formData.firstName || 'there';
+      await sendOtpEmail(
+        formData.emailID,
+        '',
+        patientName + '\n\nCongratulations! Your registration is successful. You can now log in to the MediTech Patient Portal.'
+      );
+    } catch (e) {
+      // Optionally log or ignore email errors
+    }
+    Swal.fire({
+      icon: 'success',
+      title: 'Registration Successful',
+      text: 'Registration completed successfully! You can now login.',
+      confirmButtonText: 'Go to Login',
+      customClass: {
+        confirmButton: 'btn btn-primary'
+      },
+      buttonsStyling: false
+    }).then(() => {
+      window.location.href = '/login';
+    });
+  };
+
+  const handleOtpClose = () => {
+    setShowOtpModal(false);
+  };
+
+  const handleResendOtp = async () => {
+    try {
+      // In real app, this would call the backend to resend OTP
+      const otp = Math.floor(100000 + Math.random() * 900000).toString();
+      const patientName = formData.firstName || 'there';
+      await sendOtpEmail(formData.emailID, otp, patientName);
+      logOtpToConsole(formData.emailID, otp);
+    } catch (error) {
+      console.error('Error resending OTP:', error);
+    }
   };
 
   return (
-    <div className="registration-page">
-      <div className="registration-container">
-        {/* Left Side - Patient Diagnosis Illustration */}
-        <div className="illustration-section">
-          <div className="illustration-content">
-            <div className="patient-diagnosis-illustration">
-              {/* Patient Diagnosis Elements */}
-              <div className="diagnosis-elements">
-                <div className="patient-profile"></div>
-                <div className="opd-schedule"></div>
-                <div className="diagnostic-scanner"></div>
-                <div className="medical-records"></div>
-                <div className="ai-assistant"></div>
-                <div className="floating-particle"></div>
-                <div className="floating-particle"></div>
-                <div className="floating-particle"></div>
-                <div className="floating-particle"></div>
-              </div>
-            </div>
-          </div>
+    <div className="appointment-bg">
+      <div className="appointment-overlay">
+        {/* Form Header */}
+        <div className="form-header">
+          <h1 className="appointment-title">Patient Registration</h1>
         </div>
-
-        {/* Right Side - Registration Form */}
-        <div className="form-section">
-          <div className="registration-form">
-            <div className="form-header">
-              <h1>Patient Register</h1>
+        {/* Form Content */}
+        <div className="form-content">
+          <form className="registration-form" onSubmit={handleSubmit} autoComplete="off">
+            <div className="row">
+              <div className="col-md-4 mb-3">
+                <label className="registration-label required">First Name <span className="text-danger">*</span></label>
+                <input type="text" name="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="Enter first name" className={`form-control${errors.firstName ? ' is-invalid' : ''}`} required />
+                {submitAttempted && errors.firstName && <div className="invalid-feedback d-block">{errors.firstName}</div>}
+              </div>
+              <div className="col-md-4 mb-3">
+                <label className="registration-label">Middle Name</label>
+                <input type="text" name="middleName" value={formData.middleName} onChange={handleInputChange} placeholder="Enter middle name" className="form-control" />
+              </div>
+              <div className="col-md-4 mb-3">
+                <label className="registration-label required">Last Name <span className="text-danger">*</span></label>
+                <input type="text" name="lastName" value={formData.lastName} onChange={handleInputChange} placeholder="Enter last name" className={`form-control${errors.lastName ? ' is-invalid' : ''}`} required />
+                {submitAttempted && errors.lastName && <div className="invalid-feedback d-block">{errors.lastName}</div>}
+              </div>
+            
+              <div className="col-md-6 mb-3">
+                <label className="registration-label required">Age <span className="text-danger">*</span></label>
+                <input type="number" name="age" value={formData.age} onChange={handleInputChange} placeholder="Enter age" min="0" max="120" className={`form-control${errors.age ? ' is-invalid' : ''}`} required />
+                {submitAttempted && errors.age && <div className="invalid-feedback d-block">{errors.age}</div>}
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="registration-label required">Date of Birth <span className="text-danger">*</span></label>
+                <input type="date" name="dob" value={formData.dob} onChange={handleInputChange} className={`form-control${errors.dob ? ' is-invalid' : ''}`} required />
+                {submitAttempted && errors.dob && <div className="invalid-feedback d-block">{errors.dob}</div>}
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="registration-label required">Gender <span className="text-danger">*</span></label>
+                <select name="gender" value={formData.gender} onChange={handleInputChange} className={`form-control${errors.gender ? ' is-invalid' : ''}`} required>
+                  <option value="">Select gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+                {submitAttempted && errors.gender && <div className="invalid-feedback d-block">{errors.gender}</div>}
+              </div>
+            
+           
+              <div className="col-md-6 mb-3">
+                <label className="registration-label required">Country Code</label>
+                <select name="countryCode" value={formData.countryCode} onChange={handleInputChange} className={`form-control${errors.countryCode ? ' is-invalid' : ''}`} required>
+                  <option value="+91">+91</option>
+                  <option value="+1">+1</option>
+                  <option value="+44">+44</option>
+                  <option value="+61">+61</option>
+                </select>
+                {submitAttempted && errors.countryCode && <div className="invalid-feedback d-block">{errors.countryCode}</div>}
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="registration-label required">Mobile Number <span className="text-danger">*</span></label>
+                <input type="tel" name="mobileNumber" value={formData.mobileNumber} onChange={handleInputChange} placeholder="Enter mobile number" maxLength="10" className={`form-control${errors.mobileNumber ? ' is-invalid' : ''}`} required />
+                {phoneError && <div className="invalid-feedback d-block">{phoneError}</div>}
+                {submitAttempted && errors.mobileNumber && <div className="invalid-feedback d-block">{errors.mobileNumber}</div>}
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="registration-label required">Email <span className="text-danger">*</span></label>
+                <input type="email" name="emailID" value={formData.emailID} onChange={handleInputChange} placeholder="Enter your email" className={`form-control${errors.emailID ? ' is-invalid' : ''}`} required />
+                {submitAttempted && errors.emailID && <div className="invalid-feedback d-block">{errors.emailID}</div>}
+              </div>
+           
+              <div className="col-md-6 mb-3">
+                <label className="registration-label required">Country <span className="text-danger">*</span></label>
+                <select name="countryID" value={formData.countryID} onChange={handleInputChange} className={`form-control${errors.countryID ? ' is-invalid' : ''}`} required>
+                  <option value="">Select country</option>
+                  {countries.map(country => (
+                    <option key={country.countryID} value={country.countryID}>{country.countryName}</option>
+                  ))}
+                </select>
+                {submitAttempted && errors.countryID && <div className="invalid-feedback d-block">{errors.countryID}</div>}
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="registration-label required">State</label>
+                <select name="stateID" value={formData.stateID} onChange={handleInputChange} className={`form-control${errors.stateID ? ' is-invalid' : ''}`} required disabled={!formData.countryID}>
+                  <option value="">Select state</option>
+                  {states.map(state => (
+                    <option key={state.stateID} value={state.stateID}>{state.stateName}</option>
+                  ))}
+                </select>
+                {submitAttempted && errors.stateID && <div className="invalid-feedback d-block">{errors.stateID}</div>}
+              </div>
+              <div className="col-md-6 mb-3">
+                <label className="registration-label required">District</label>
+                <select name="districtID" value={formData.districtID} onChange={handleInputChange} className={`form-control${errors.districtID ? ' is-invalid' : ''}`} required disabled={!formData.stateID}>
+                  <option value="">Select district</option>
+                  {districts.map(district => (
+                    <option key={district.districtID} value={district.districtID}>{district.districtName}</option>
+                  ))}
+                </select>
+                {submitAttempted && errors.districtID && <div className="invalid-feedback d-block">{errors.districtID}</div>}
+              </div>
+            
+              <div className="col-md-6 mb-3">
+                <label className="registration-label required">City</label>
+                <select name="cityID" value={formData.cityID} onChange={handleInputChange} className={`form-control${errors.cityID ? ' is-invalid' : ''}`} required disabled={!formData.districtID}>
+                  <option value="">Select city</option>
+                  {cities.map(city => (
+                    <option key={city.cityID} value={city.cityID}>{city.cityName}</option>
+                  ))}
+                </select>
+                {submitAttempted && errors.cityID && <div className="invalid-feedback d-block">{errors.cityID}</div>}
+              </div>
             </div>
-
-            <form onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label htmlFor="name">Name <span className="required-indicator">*</span></label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleInputChange}
-                  placeholder="Enter your full name"
-                  required
-                />
-                {errors.name && <div className="error-message">{errors.name}</div>}
-              </div>
-
-              <div className="form-row-2">
-                <div className="form-group">
-                  <label htmlFor="firstName">First Name <span className="required-indicator">*</span></label>
-                  <input
-                    type="text"
-                    id="firstName"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    placeholder="First name"
-                    required
-                  />
-                  {errors.firstName && <div className="error-message">{errors.firstName}</div>}
-                </div>
-                <div className="form-group">
-                  <label htmlFor="lastName">Last Name <span className="required-indicator">*</span></label>
-                  <input
-                    type="text"
-                    id="lastName"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    placeholder="Last name"
-                    required
-                  />
-                  {errors.lastName && <div className="error-message">{errors.lastName}</div>}
-                </div>
-              </div>
-
-              <div className="form-row-2">
-                <div className="form-group">
-                  <label htmlFor="age">Age <span className="required-indicator">*</span></label>
-                  <input
-                    type="number"
-                    id="age"
-                    name="age"
-                    value={formData.age}
-                    onChange={handleInputChange}
-                    placeholder="Age"
-                    min="0"
-                    required
-                  />
-                  {errors.age && <div className="error-message">{errors.age}</div>}
-                </div>
-                <div className="form-group">
-                  <label htmlFor="gender">Gender <span className="required-indicator">*</span></label>
-                  <select
-                    id="gender"
-                    name="gender"
-                    value={formData.gender}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="">Select gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
-                  </select>
-                  {errors.gender && <div className="error-message">{errors.gender}</div>}
-                </div>
-              </div>
-
-              <div className="form-row-2">
-                <div className="form-group">
-                  <label htmlFor="countryId">Country <span className="required-indicator">*</span></label>
-                  <select
-                    id="countryId"
-                    name="countryId"
-                    value={formData.countryId}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    {countries.map(c => (
-                      <option key={c.id} value={c.id}>{c.name}</option>
-                    ))}
-                  </select>
-                  {errors.countryId && <div className="error-message">{errors.countryId}</div>}
-                </div>
-                <div className="form-group">
-                  <label htmlFor="state">State <span className="required-indicator">*</span></label>
-                  <select
-                    id="state"
-                    name="state"
-                    value={formData.state}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="">Select state</option>
-                    {selectedCountry.states.map(s => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                  {errors.state && <div className="error-message">{errors.state}</div>}
-                </div>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="email">Email <span className="required-indicator">*</span></label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder="Enter your email"
-                  required
-                />
-                {errors.email && <div className="error-message">{errors.email}</div>}
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="phone">Phone</label>
-                <div className="phone-input">
-                  <span className="country-prefix">+91</span>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    placeholder="Enter 10-digit mobile number"
-                    maxLength="10"
-                    required
-                  />
-                </div>
-                {phoneError && <div className="error-message">{phoneError}</div>}
-                {errors.phone && <div className="error-message">{errors.phone}</div>}
-              </div>
-
-              
-
-              <button type="submit" className="signup-btn">
-                <i className="fa-solid fa-lock"></i>
-                Sign Up
-              </button>
-            </form>
-
-          </div>
+            <button type="submit" className="appointment-btn" disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <i className="fa-solid fa-spinner fa-spin"></i>
+                  Registering...
+                </>
+              ) : (
+                <>
+                  <i className="fa-solid fa-user-plus"></i>
+                  Register
+                </>
+              )}
+            </button>
+          </form>
+          {showOtpModal && (
+            <OtpValidation
+              pid={pid}
+              onSuccess={handleOtpSuccess}
+              onClose={handleOtpClose}
+              onResendOtp={handleResendOtp}
+            />
+          )}
         </div>
       </div>
     </div>
   );
-};
-
+}
 export default Registration;
