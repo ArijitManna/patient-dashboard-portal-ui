@@ -1,3 +1,5 @@
+import { Typeahead } from 'react-bootstrap-typeahead';
+import 'react-bootstrap-typeahead/css/Typeahead.css';
 import React, { useMemo, useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import { registerPatient, getCountries, getStates, getDistricts, getCities } from '../../services/api';
@@ -13,7 +15,6 @@ const Registration = () => {
     age: '',
     dob: '',
     gender: '',
-    countryCode: '+91',
     mobileNumber: '',
     emailID: '',
     countryID: '',
@@ -162,7 +163,6 @@ const Registration = () => {
     if (!formData.age || Number(formData.age) <= 0) newErrors.age = 'Valid age is required';
     if (!formData.dob) newErrors.dob = 'Date of Birth is required';
     if (!formData.gender) newErrors.gender = 'Gender is required';
-    if (!formData.countryCode) newErrors.countryCode = 'Country Code is required';
     if (!validatePhoneNumber(formData.mobileNumber)) newErrors.mobileNumber = 'Valid mobile number is required';
     if (!formData.emailID || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emailID)) newErrors.emailID = 'Valid email is required';
     if (!formData.countryID) newErrors.countryID = 'Country is required';
@@ -292,16 +292,7 @@ const Registration = () => {
               </div>
             
            
-              <div className="col-md-6 mb-3">
-                <label className="registration-label required">Country Code</label>
-                <select name="countryCode" value={formData.countryCode} onChange={handleInputChange} className={`form-control${errors.countryCode ? ' is-invalid' : ''}`} required>
-                  <option value="+91">+91</option>
-                  <option value="+1">+1</option>
-                  <option value="+44">+44</option>
-                  <option value="+61">+61</option>
-                </select>
-                {submitAttempted && errors.countryCode && <div className="invalid-feedback d-block">{errors.countryCode}</div>}
-              </div>
+              
               <div className="col-md-6 mb-3">
                 <label className="registration-label required">Mobile Number <span className="text-danger">*</span></label>
                 <input type="tel" name="mobileNumber" value={formData.mobileNumber} onChange={handleInputChange} placeholder="Enter mobile number" maxLength="10" className={`form-control${errors.mobileNumber ? ' is-invalid' : ''}`} required />
@@ -316,43 +307,139 @@ const Registration = () => {
            
               <div className="col-md-6 mb-3">
                 <label className="registration-label required">Country <span className="text-danger">*</span></label>
-                <select name="countryID" value={formData.countryID} onChange={handleInputChange} className={`form-control${errors.countryID ? ' is-invalid' : ''}`} required>
-                  <option value="">Select country</option>
-                  {countries.map(country => (
-                    <option key={country.countryID} value={country.countryID}>{country.countryName}</option>
-                  ))}
-                </select>
+                <Typeahead
+                  id="country-typeahead"
+                  labelKey="countryName"
+                  options={countries}
+                  placeholder="Search country"
+                  onChange={selected => {
+                    if (selected && selected.length > 0) {
+                      setFormData(prev => ({
+                        ...prev,
+                        countryID: selected[0].countryID,
+                        countrySearch: selected[0].countryName
+                      }));
+                    } else {
+                      setFormData(prev => ({ ...prev, countryID: '', countrySearch: '' }));
+                    }
+                    if (errors['countryID']) {
+                      setErrors(prev => ({ ...prev, countryID: '' }));
+                    }
+                  }}
+                  selected={
+                    formData.countryID
+                      ? countries.filter(c => c.countryID === formData.countryID)
+                      : []
+                  }
+                  isInvalid={!!(submitAttempted && errors.countryID)}
+                  inputProps={{ className: `form-control${errors.countryID ? ' is-invalid' : ''}` }}
+                  renderMenuItemChildren={(option) => (
+                    <span>{option.countryName}</span>
+                  )}
+                />
                 {submitAttempted && errors.countryID && <div className="invalid-feedback d-block">{errors.countryID}</div>}
               </div>
               <div className="col-md-6 mb-3">
                 <label className="registration-label required">State</label>
-                <select name="stateID" value={formData.stateID} onChange={handleInputChange} className={`form-control${errors.stateID ? ' is-invalid' : ''}`} required disabled={!formData.countryID}>
-                  <option value="">Select state</option>
-                  {states.map(state => (
-                    <option key={state.stateID} value={state.stateID}>{state.stateName}</option>
-                  ))}
-                </select>
+                <Typeahead
+                  id="state-typeahead"
+                  labelKey="stateName"
+                  options={states}
+                  placeholder="Search state"
+                  onChange={selected => {
+                    if (selected && selected.length > 0) {
+                      setFormData(prev => ({
+                        ...prev,
+                        stateID: selected[0].stateID,
+                        stateSearch: selected[0].stateName
+                      }));
+                    } else {
+                      setFormData(prev => ({ ...prev, stateID: '', stateSearch: '' }));
+                    }
+                    if (errors['stateID']) {
+                      setErrors(prev => ({ ...prev, stateID: '' }));
+                    }
+                  }}
+                  selected={
+                    formData.stateID
+                      ? states.filter(s => s.stateID === formData.stateID)
+                      : []
+                  }
+                  isInvalid={!!(submitAttempted && errors.stateID)}
+                  inputProps={{ className: `form-control${errors.stateID ? ' is-invalid' : ''}`, disabled: !formData.countryID }}
+                  renderMenuItemChildren={(option) => (
+                    <span>{option.stateName}</span>
+                  )}
+                />
                 {submitAttempted && errors.stateID && <div className="invalid-feedback d-block">{errors.stateID}</div>}
               </div>
               <div className="col-md-6 mb-3">
                 <label className="registration-label required">District</label>
-                <select name="districtID" value={formData.districtID} onChange={handleInputChange} className={`form-control${errors.districtID ? ' is-invalid' : ''}`} required disabled={!formData.stateID}>
-                  <option value="">Select district</option>
-                  {districts.map(district => (
-                    <option key={district.districtID} value={district.districtID}>{district.districtName}</option>
-                  ))}
-                </select>
+                <Typeahead
+                  id="district-typeahead"
+                  labelKey="districtName"
+                  options={districts}
+                  placeholder="Search district"
+                  onChange={selected => {
+                    if (selected && selected.length > 0) {
+                      setFormData(prev => ({
+                        ...prev,
+                        districtID: selected[0].districtID,
+                        districtSearch: selected[0].districtName
+                      }));
+                    } else {
+                      setFormData(prev => ({ ...prev, districtID: '', districtSearch: '' }));
+                    }
+                    if (errors['districtID']) {
+                      setErrors(prev => ({ ...prev, districtID: '' }));
+                    }
+                  }}
+                  selected={
+                    formData.districtID
+                      ? districts.filter(d => d.districtID === formData.districtID)
+                      : []
+                  }
+                  isInvalid={!!(submitAttempted && errors.districtID)}
+                  inputProps={{ className: `form-control${errors.districtID ? ' is-invalid' : ''}`, disabled: !formData.stateID }}
+                  renderMenuItemChildren={(option) => (
+                    <span>{option.districtName}</span>
+                  )}
+                />
                 {submitAttempted && errors.districtID && <div className="invalid-feedback d-block">{errors.districtID}</div>}
               </div>
             
               <div className="col-md-6 mb-3">
                 <label className="registration-label required">City</label>
-                <select name="cityID" value={formData.cityID} onChange={handleInputChange} className={`form-control${errors.cityID ? ' is-invalid' : ''}`} required disabled={!formData.districtID}>
-                  <option value="">Select city</option>
-                  {cities.map(city => (
-                    <option key={city.cityID} value={city.cityID}>{city.cityName}</option>
-                  ))}
-                </select>
+                <Typeahead
+                  id="city-typeahead"
+                  labelKey="cityName"
+                  options={cities}
+                  placeholder="Search city"
+                  onChange={selected => {
+                    if (selected && selected.length > 0) {
+                      setFormData(prev => ({
+                        ...prev,
+                        cityID: selected[0].cityID,
+                        citySearch: selected[0].cityName
+                      }));
+                    } else {
+                      setFormData(prev => ({ ...prev, cityID: '', citySearch: '' }));
+                    }
+                    if (errors['cityID']) {
+                      setErrors(prev => ({ ...prev, cityID: '' }));
+                    }
+                  }}
+                  selected={
+                    formData.cityID
+                      ? cities.filter(c => c.cityID === formData.cityID)
+                      : []
+                  }
+                  isInvalid={!!(submitAttempted && errors.cityID)}
+                  inputProps={{ className: `form-control${errors.cityID ? ' is-invalid' : ''}`, disabled: !formData.districtID }}
+                  renderMenuItemChildren={(option) => (
+                    <span>{option.cityName}</span>
+                  )}
+                />
                 {submitAttempted && errors.cityID && <div className="invalid-feedback d-block">{errors.cityID}</div>}
               </div>
             </div>
