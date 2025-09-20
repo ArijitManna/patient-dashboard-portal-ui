@@ -74,10 +74,10 @@
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  height: 70px;
+  height: 100%;
 }
 
-.signup-btn,
+.signin-btn,
 .register-btn {
   height: 32px;
   padding: 0 12px;
@@ -97,12 +97,9 @@
   white-space: nowrap;
   line-height: 1;
   margin: 0;
-  position: relative;
-  top: 0;
-  transform: translateY(0);
 }
 
-.signup-btn i,
+.signin-btn i,
 .register-btn i {
   display: flex;
   align-items: center;
@@ -115,12 +112,12 @@
   padding: 0;
 }
 
-.signup-btn {
+.signin-btn {
   background: #1e40af;
   color: white;
 }
 
-.signup-btn:hover {
+.signin-btn:hover {
   background: #1e3a8a;
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(30, 64, 175, 0.2);
@@ -147,7 +144,7 @@
     font-size: 1.1rem;
   }
   
-  .signup-btn,
+  .signin-btn,
   .register-btn {
     height: 28px;
     padding: 0 10px;
@@ -178,7 +175,7 @@
     gap: 4px;
   }
   
-  .signup-btn,
+  .signin-btn,
   .register-btn {
     height: 26px;
     padding: 0 8px;

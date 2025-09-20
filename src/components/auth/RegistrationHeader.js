@@ -14,11 +14,17 @@ const RegistrationHeader = ({ onPageChange }) => {
         </div>
         
         <div className="header-actions">
-          <button className="signup-btn">
-            <i className="fa-solid fa-lock"></i>
-            Sign Up
+          <button 
+            className="signin-btn"
+            onClick={() => onPageChange('login')}
+          >
+            <i className="fa-solid fa-sign-in-alt"></i>
+            Sign In
           </button>
-          <button className="register-btn">
+          <button 
+            className="register-btn"
+            onClick={() => onPageChange('registration')}
+          >
             <i className="fa-solid fa-user-plus"></i>
             Register
           </button>

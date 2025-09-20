@@ -63,14 +63,30 @@ export const dependents = [
     id: 1,
     name: 'Laura',
     relationship: 'Mother',
-    age: '58 years 20 days',
-    avatar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjUiIGN5PSIyNSIgcj0iMjQiIGZpbGw9IiM2NjdFRUEiLz4KPGNpcmNsZSBjeD0iMjUiIGN5PSIxOCIgcj0iOCIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTggMzVjMC0xMC41IDcuNS0xOSAxNy0xOWgxMEMzNC41IDE2IDQyIDI0LjUgNDIgMzVWNDJIOFYzNVoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo='
+    age: '58 Years 20 Days',
+    gender: 'Female',
+    bloodGroup: 'AB+ve',
+    isActive: true,
+    avatar: 'https://i.pravatar.cc/120?img=1'
   },
   {
     id: 2,
     name: 'Mathew',
     relationship: 'Father',
-    age: '59 years 15 days',
-    avatar: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAiIGhlaWdodD0iNTAiIHZpZXdCb3g9IjAgMCA1MCA1MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGNpcmNsZSBjeD0iMjUiIGN5PSIyNSIgcj0iMjQiIGZpbGw9IiM2NjdFRUEiLz4KPGNpcmNsZSBjeD0iMjUiIGN5PSIxOCIgcj0iOCIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTggMzVjMC0xMC41IDcuNS0xOSAxNy0xOWgxMEMzNC41IDE2IDQyIDI0LjUgNDIgMzVWNDJIOFYzNVoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo='
+    age: '59 Years 15 Days',
+    gender: 'Male',
+    bloodGroup: 'AB+ve',
+    isActive: true,
+    avatar: 'https://i.pravatar.cc/120?img=2'
+  },
+  {
+    id: 3,
+    name: 'Christopher',
+    relationship: 'Brother',
+    age: '32 Years 6 Months',
+    gender: 'Male',
+    bloodGroup: 'A+ve',
+    isActive: true,
+    avatar: 'https://i.pravatar.cc/120?img=3'
   }
 ];

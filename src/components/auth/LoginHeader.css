@@ -1,5 +1,8 @@
 .login-header {
   position: fixed;
+  background-image: url('/public/top-bar.jpg') !important;
+  background-size: cover;
+  background-position: center;
   top: 0;
   left: 0;
   right: 0;
@@ -73,7 +76,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
-  height: 70px;
+  height: 100%;
 }
 
 .signin-btn,
@@ -96,9 +99,6 @@
   white-space: nowrap;
   line-height: 1;
   margin: 0;
-  position: relative;
-  top: 0;
-  transform: translateY(0);
 }
 
 .signin-btn i,

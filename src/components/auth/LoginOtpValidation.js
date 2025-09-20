@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { validateOtp, validateLoginOtp } from '../../services/api';
+import { validateLoginOtp } from '../../services/api';
 import './OtpValidation.css';
 
-const OtpValidation = ({ pid, onSuccess, onClose, onResendOtp, mode = 'registration' }) => {
+const LoginOtpValidation = ({ pid, onSuccess, onClose, onResendOtp }) => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [timer, setTimer] = useState(60);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
@@ -19,27 +19,23 @@ const OtpValidation = ({ pid, onSuccess, onClose, onResendOtp, mode = 'registrat
         return prevTimer - 1;
       });
     }, 1000);
-
     return () => clearInterval(interval);
   }, []);
 
   const handleOtpChange = (index, value) => {
-    if (value.length > 1) return; // Only allow single digit
-    
+    if (value.length > 1) return;
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
-
-    // Auto-focus next input
     if (value && index < 5) {
-      const nextInput = document.getElementById(`otp-${index + 1}`);
+      const nextInput = document.getElementById(`otp-login-${index + 1}`);
       if (nextInput) nextInput.focus();
     }
   };
 
   const handleKeyDown = (index, e) => {
     if (e.key === 'Backspace' && !otp[index] && index > 0) {
-      const prevInput = document.getElementById(`otp-${index - 1}`);
+      const prevInput = document.getElementById(`otp-login-${index - 1}`);
       if (prevInput) prevInput.focus();
     }
   };
@@ -47,26 +43,21 @@ const OtpValidation = ({ pid, onSuccess, onClose, onResendOtp, mode = 'registrat
   const handleSubmit = async (e) => {
     e.preventDefault();
     const otpString = otp.join('');
-    
     if (otpString.length !== 6) {
       setError('Please enter a 6-digit OTP');
       return;
     }
-
     setIsLoading(true);
     setError('');
-
     try {
-      let response;
-      if (mode === 'login') {
-        console.log('Validating login OTP with:', { pid, OTP_Code: otpString });
-        response = await validateLoginOtp(pid, otpString);
-      } else {
-        console.log('Validating registration OTP with:', { pid, OTP_Code: otpString });
-        response = await validateOtp({ pid, OTP_Code: otpString });
-      }
-
-      if (response.status === 200) {
+      console.log('Validating login OTP with:', { pid, OTP_Code: otpString });
+      const response = await validateLoginOtp(pid, otpString);
+      if (response.status === 200 && response.data.success) {
+        // Store JWT token from response
+        if (response.data.token) {
+          sessionStorage.setItem('authToken', response.data.token);
+          console.log('JWT token stored:', response.data.token);
+        }
         onSuccess(response.data);
       }
     } catch (err) {
@@ -94,19 +85,17 @@ const OtpValidation = ({ pid, onSuccess, onClose, onResendOtp, mode = 'registrat
     <div className="otp-overlay">
       <div className="otp-modal">
         <div className="otp-header">
-          <h2>Verify OTP</h2>
+          <h2>Login OTP Verification</h2>
           <button className="close-btn" onClick={onClose}>&times;</button>
         </div>
-        
         <div className="otp-content">
-          <p>We've sent a 6-digit OTP to your email address.</p>
-          
+          <p>Enter the 6-digit OTP sent to your email for login.</p>
           <form onSubmit={handleSubmit}>
             <div className="otp-inputs">
               {otp.map((digit, index) => (
                 <input
                   key={index}
-                  id={`otp-${index}`}
+                  id={`otp-login-${index}`}
                   type="text"
                   maxLength="1"
                   value={digit}
@@ -117,13 +106,10 @@ const OtpValidation = ({ pid, onSuccess, onClose, onResendOtp, mode = 'registrat
                 />
               ))}
             </div>
-
             {error && <div className="error-message">{error}</div>}
-
             <div className="timer-section">
               <p>Resend OTP in: {formatTime(timer)}</p>
             </div>
-
             <div className="otp-actions">
               <button
                 type="button"
@@ -133,7 +119,6 @@ const OtpValidation = ({ pid, onSuccess, onClose, onResendOtp, mode = 'registrat
               >
                 Resend OTP
               </button>
-              
               <button
                 type="submit"
                 className="verify-btn"
@@ -149,4 +134,4 @@ const OtpValidation = ({ pid, onSuccess, onClose, onResendOtp, mode = 'registrat
   );
 };
 
-export default OtpValidation;
+export default LoginOtpValidation;

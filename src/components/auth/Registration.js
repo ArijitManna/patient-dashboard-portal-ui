@@ -5,7 +5,7 @@ import Swal from 'sweetalert2';
 import { registerPatient, getCountries, getStates, getDistricts, getCities } from '../../services/api';
 import { sendOtpEmail, logOtpToConsole } from '../../services/emailService';
 import OtpValidation from './OtpValidation';
-import './Registration.css';
+import './AuthCommon.css';
 
 const Registration = () => {
   const [formData, setFormData] = useState({
@@ -270,17 +270,17 @@ const Registration = () => {
                 {submitAttempted && errors.lastName && <div className="invalid-feedback d-block">{errors.lastName}</div>}
               </div>
             
-              <div className="col-md-6 mb-3">
+              <div className="col-md-4 mb-3">
                 <label className="registration-label required">Age <span className="text-danger">*</span></label>
                 <input type="number" name="age" value={formData.age} onChange={handleInputChange} placeholder="Enter age" min="0" max="120" className={`form-control${errors.age ? ' is-invalid' : ''}`} required />
                 {submitAttempted && errors.age && <div className="invalid-feedback d-block">{errors.age}</div>}
               </div>
-              <div className="col-md-6 mb-3">
+              <div className="col-md-4 mb-3">
                 <label className="registration-label required">Date of Birth <span className="text-danger">*</span></label>
                 <input type="date" name="dob" value={formData.dob} onChange={handleInputChange} className={`form-control${errors.dob ? ' is-invalid' : ''}`} required />
                 {submitAttempted && errors.dob && <div className="invalid-feedback d-block">{errors.dob}</div>}
               </div>
-              <div className="col-md-6 mb-3">
+              <div className="col-md-4 mb-3">
                 <label className="registration-label required">Gender <span className="text-danger">*</span></label>
                 <select name="gender" value={formData.gender} onChange={handleInputChange} className={`form-control${errors.gender ? ' is-invalid' : ''}`} required>
                   <option value="">Select gender</option>
@@ -463,6 +463,7 @@ const Registration = () => {
               onSuccess={handleOtpSuccess}
               onClose={handleOtpClose}
               onResendOtp={handleResendOtp}
+              mode="registration"
             />
           )}
         </div>

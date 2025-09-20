@@ -5,6 +5,24 @@ const Header = ({ onPageChange }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
+  const handleLogout = () => {
+    // Clear all tokens and cache
+    sessionStorage.removeItem('authToken');
+    sessionStorage.removeItem('pid');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('pid');
+    
+    // Clear any other cached data
+    sessionStorage.clear();
+    
+    console.log('User logged out - all tokens cleared');
+    
+    // Redirect to login page
+    if (onPageChange) {
+      onPageChange('login');
+    }
+  };
+
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -51,10 +69,10 @@ const Header = ({ onPageChange }) => {
             </button>
             <button 
               className="header-icon login-btn" 
-              title="Login"
-              onClick={() => onPageChange && onPageChange('login')}
+              title="Logout"
+              onClick={handleLogout}
             >
-              <i className="fa-solid fa-sign-in-alt"></i>
+              <i className="fa-solid fa-sign-out-alt"></i>
             </button>
             <button 
               className="header-icon register-btn" 

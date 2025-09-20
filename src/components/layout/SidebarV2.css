@@ -105,6 +105,22 @@
 .v2-item:hover { background: #f3f4f6; color: #0f2ea8; transform: translateX(4px); }
 .v2-item.active { background: #0E82FD; color: #fff; box-shadow: 0 4px 12px rgba(14,130,253,0.3); transform: translateX(4px); }
 
+.v2-loading, .v2-error {
+  text-align: center;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.v2-loading {
+  color: #666;
+  font-style: italic;
+}
+
+.v2-error {
+  color: #e74c3c;
+  font-weight: 500;
+}
+
 @media (max-width: 768px) {
   .v2-banner { height: 170px; }
   .v2-avatar { width: 120px; height: 120px; bottom: -54px; }

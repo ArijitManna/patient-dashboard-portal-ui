@@ -350,6 +350,181 @@
   box-shadow: none;
 }
 
+/* Login Form Specific Styles */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* Password Header */
+.password-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.forgot-password {
+  color: #ffa500;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.forgot-password:hover {
+  color: #ff8800;
+  text-decoration: underline;
+}
+
+/* Password Input */
+.password-input {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #b0b8c9;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.password-toggle:hover {
+  color: #ffa500;
+}
+
+/* Checkbox Group */
+.checkbox-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.checkbox-item input[type="checkbox"] {
+  width: auto !important;
+  margin: 0;
+  accent-color: #ffa500;
+}
+
+.checkbox-item label {
+  margin: 0 !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: #d7e0e2 !important;
+  cursor: pointer;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+}
+
+/* Separator */
+.separator {
+  text-align: center;
+  margin: 24px 0;
+  position: relative;
+}
+
+.separator::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(215, 224, 226, 0.3);
+}
+
+.separator span {
+  background: rgba(10, 40, 70, 0.85);
+  padding: 0 12px;
+  color: #d7e0e2;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Social Login */
+.social-login {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.google-btn,
+.facebook-btn {
+  width: 100%;
+  padding: 12px 18px;
+  border: 1px solid rgba(215, 224, 226, 0.3);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #d7e0e2;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  backdrop-filter: blur(10px);
+}
+
+.google-btn:hover,
+.facebook-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(215, 224, 226, 0.5);
+  transform: translateY(-1px);
+}
+
+.google-btn i {
+  color: #ea4335;
+  font-size: 1rem;
+}
+
+.facebook-btn i {
+  color: #1877f2;
+  font-size: 1rem;
+}
+
+/* Error/Invalid Feedback */
+.invalid-feedback {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.invalid-feedback.d-block {
+  display: block;
+}
+
+.form-control.is-invalid {
+  border-color: #e74c3c;
+}
+
+.text-danger {
+  color: #e74c3c !important;
+}
+
 /* Loading State */
 .signup-btn.loading {
   position: relative;

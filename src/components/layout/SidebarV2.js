@@ -1,8 +1,7 @@
 import React from 'react';
 import './SidebarV2.css';
-import { patientData } from '../../data/mockData';
 
-const SidebarV2 = ({ activeTab, setActiveTab, onLogout }) => {
+const SidebarV2 = ({ activeTab, setActiveTab, onLogout, patientData, isLoadingPatient, patientError }) => {
   return (
     <div className="sidebar-v2">
       <div className="v2-banner">
@@ -15,13 +14,23 @@ const SidebarV2 = ({ activeTab, setActiveTab, onLogout }) => {
       </div>
 
       <div className="v2-profile">
-        <h3 className="v2-name">{patientData.name}</h3>
-        <p className="v2-id">Patient ID : {patientData.id}</p>
-        <p className="v2-details">
-          {patientData.gender}
-          <span className="v2-dot">•</span>
-          {patientData.age} years 03 Months
-        </p>
+        {isLoadingPatient ? (
+          <div className="v2-loading">Loading patient data...</div>
+        ) : patientError ? (
+          <div className="v2-error">Failed to load patient data</div>
+        ) : patientData ? (
+          <>
+            <h3 className="v2-name">{patientData.patientFullName}</h3>
+            <p className="v2-id">Patient ID : {patientData.patientID}</p>
+            <p className="v2-details">
+              {patientData.gender}
+              <span className="v2-dot">•</span>
+              {patientData.age} years
+            </p>
+          </>
+        ) : (
+          <div className="v2-loading">No patient data</div>
+        )}
       </div>
 
       <nav className="v2-nav">
@@ -47,6 +56,14 @@ const SidebarV2 = ({ activeTab, setActiveTab, onLogout }) => {
         >
           <i className="fa-solid fa-clipboard-list"></i>
           <span>Medical Records</span>
+        </button>
+
+        <button 
+          className={`v2-item ${activeTab === 'dependants' ? 'active' : ''}`}
+          onClick={() => setActiveTab('dependants')}
+        >
+          <i className="fa-solid fa-users"></i>
+          <span>Dependants</span>
         </button>
 
         <button className="v2-item" onClick={onLogout}
