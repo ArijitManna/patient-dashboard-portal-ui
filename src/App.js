@@ -46,6 +46,7 @@ function App() {
         // Token expired, redirect to login
         sessionStorage.removeItem('authToken');
         sessionStorage.removeItem('pid');
+        sessionStorage.removeItem('userEmail');
         setCurrentPage('login');
       }
     } finally {
@@ -56,6 +57,7 @@ function App() {
   const handleLogout = () => {
     sessionStorage.removeItem('authToken');
     sessionStorage.removeItem('pid');
+    sessionStorage.removeItem('userEmail');
     setPatientData(null);
     setCurrentPage('login');
   };

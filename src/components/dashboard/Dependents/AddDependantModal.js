@@ -1,33 +1,80 @@
 import React, { useState } from 'react';
+import { addBulkDependents } from '../../../services/api';
 import './AddDependantModal.css';
 
-const AddDependantModal = ({ isOpen, onClose, onAddDependant }) => {
-  const [formData, setFormData] = useState({
-    name: '',
-    relationship: '',
-    dateOfBirth: '',
-    gender: 'Male',
+const AddDependantModal = ({ isOpen, onClose, onAddDependant, patientData }) => {
+  // Array to store multiple dependents
+  const [dependentsList, setDependentsList] = useState([{
+    id: 1,
+    first_Name: '',
+    middle_Name: '',
+    last_Name: '',
+    age: '',
+    relationshipID: '',
     profilePhoto: null
-  });
+  }]);
 
-  const [photoPreview, setPhotoPreview] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState({});
 
-  const handleInputChange = (e) => {
+  // Relationship options (should match the backend)
+  const relationshipOptions = [
+    { id: 1, name: 'Father' },
+    { id: 2, name: 'Mother' },
+    { id: 3, name: 'Brother' },
+    { id: 4, name: 'Sister' },
+    { id: 5, name: 'Spouse' },
+    { id: 6, name: 'Son' },
+    { id: 7, name: 'Daughter' },
+    { id: 8, name: 'Grandfather' },
+    { id: 9, name: 'Grandmother' },
+    { id: 10, name: 'Other' }
+  ];
+
+  const handleInputChange = (index, e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setDependentsList(prev => 
+      prev.map((dependent, i) => 
+        i === index ? { ...dependent, [name]: value } : dependent
+      )
+    );
   };
 
-  const handleGenderSelect = (gender) => {
-    setFormData(prev => ({
-      ...prev,
-      gender: gender
-    }));
+  const handleRelationshipChange = (index, e) => {
+    const relationshipID = parseInt(e.target.value);
+    setDependentsList(prev => 
+      prev.map((dependent, i) => 
+        i === index ? { ...dependent, relationshipID } : dependent
+      )
+    );
   };
 
-  const handlePhotoUpload = (e) => {
+  const addNewDependent = () => {
+    const newId = Math.max(...dependentsList.map(d => d.id)) + 1;
+    setDependentsList(prev => [...prev, {
+      id: newId,
+      first_Name: '',
+      middle_Name: '',
+      last_Name: '',
+      age: '',
+      relationshipID: '',
+      profilePhoto: null
+    }]);
+  };
+
+  const removeDependent = (index) => {
+    if (dependentsList.length > 1) {
+      const dependentId = dependentsList[index].id;
+      setDependentsList(prev => prev.filter((_, i) => i !== index));
+      // Remove photo preview for this dependent
+      setPhotoPreview(prev => {
+        const newPreviews = { ...prev };
+        delete newPreviews[dependentId];
+        return newPreviews;
+      });
+    }
+  };
+
+  const handlePhotoUpload = (index, e) => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 4 * 1024 * 1024) { // 4MB limit
@@ -37,48 +84,96 @@ const AddDependantModal = ({ isOpen, onClose, onAddDependant }) => {
       
       const reader = new FileReader();
       reader.onload = (e) => {
-        setPhotoPreview(e.target.result);
+        const dependentId = dependentsList[index].id;
+        setPhotoPreview(prev => ({
+          ...prev,
+          [dependentId]: e.target.result
+        }));
       };
       reader.readAsDataURL(file);
       
-      setFormData(prev => ({
-        ...prev,
-        profilePhoto: file
-      }));
+      setDependentsList(prev => 
+        prev.map((dependent, i) => 
+          i === index ? { ...dependent, profilePhoto: file } : dependent
+        )
+      );
     }
   };
 
-  const handleRemovePhoto = () => {
-    setPhotoPreview(null);
-    setFormData(prev => ({
-      ...prev,
-      profilePhoto: null
-    }));
+  const handleRemovePhoto = (index) => {
+    const dependentId = dependentsList[index].id;
+    setPhotoPreview(prev => {
+      const newPreviews = { ...prev };
+      delete newPreviews[dependentId];
+      return newPreviews;
+    });
+    setDependentsList(prev => 
+      prev.map((dependent, i) => 
+        i === index ? { ...dependent, profilePhoto: null } : dependent
+      )
+    );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Validation
-    if (!formData.name || !formData.relationship || !formData.dateOfBirth) {
-      alert('Please fill in all required fields');
-      return;
+    // Validation - check each dependent
+    for (let i = 0; i < dependentsList.length; i++) {
+      const dependent = dependentsList[i];
+      if (!dependent.first_Name || !dependent.last_Name || !dependent.age || !dependent.relationshipID) {
+        alert(`Please fill in all required fields for Dependent ${i + 1}`);
+        return;
+      }
+
+      // Validate age is a positive number
+      if (isNaN(dependent.age) || dependent.age < 0) {
+        alert(`Please enter a valid age for Dependent ${i + 1}`);
+        return;
+      }
     }
 
-    // Create new dependant object
-    const newDependant = {
-      id: Date.now(), // Simple ID generation
-      name: formData.name,
-      relationship: formData.relationship,
-      age: calculateAge(formData.dateOfBirth),
-      gender: formData.gender,
-      bloodGroup: 'AB+ve', // Default value
-      isActive: true,
-      avatar: photoPreview || 'https://i.pravatar.cc/120?img=' + Math.floor(Math.random() * 70)
-    };
+    try {
+      // Get patient ID from sessionStorage or patientData
+      const pid = sessionStorage.getItem('pid');
+      const currentUser = patientData?.patientFullName || sessionStorage.getItem('userEmail') || 'current-user';
 
-    onAddDependant(newDependant);
-    handleClose();
+      // Validate we have required data
+      if (!pid) {
+        alert('Session expired. Please login again.');
+        return;
+      }
+
+      // Create bulk request object matching BulkDependentsRequest schema
+      const bulkRequest = {
+        PID: pid || "00000000-0000-0000-0000-000000000000", // Changed from patientID to PID
+        Created_by: currentUser, // Changed from created_by to Created_by
+        Dependents: dependentsList.map(dependent => ({ // Changed from dependents to Dependents
+          // dependent_ID will be generated by backend
+          pid: pid || "00000000-0000-0000-0000-000000000000",
+          first_Name: dependent.first_Name.trim(),
+          middle_Name: dependent.middle_Name.trim() || null,
+          last_Name: dependent.last_Name.trim(),
+          age: parseInt(dependent.age),
+          relationshipID: dependent.relationshipID,
+          // created_by will be set by backend
+          // imageUrl: null // Image upload will be handled separately
+        }))
+      };
+
+      console.log('Bulk request data:', bulkRequest); // Debug log
+
+      // Call the bulk API
+      const response = await addBulkDependents(bulkRequest);
+      
+      // Call the parent callback with the response data
+      onAddDependant(response.data);
+      handleClose();
+      
+      alert(`${dependentsList.length} dependant(s) added successfully!`);
+    } catch (error) {
+      console.error('Error adding dependants:', error);
+      alert('Failed to add dependants. Please try again.');
+    }
   };
 
   const calculateAge = (dateOfBirth) => {
@@ -95,14 +190,16 @@ const AddDependantModal = ({ isOpen, onClose, onAddDependant }) => {
   };
 
   const handleClose = () => {
-    setFormData({
-      name: '',
-      relationship: '',
-      dateOfBirth: '',
-      gender: 'Male',
+    setDependentsList([{
+      id: 1,
+      first_Name: '',
+      middle_Name: '',
+      last_Name: '',
+      age: '',
+      relationshipID: '',
       profilePhoto: null
-    });
-    setPhotoPreview(null);
+    }]);
+    setPhotoPreview({});
     onClose();
   };
 
@@ -119,111 +216,162 @@ const AddDependantModal = ({ isOpen, onClose, onAddDependant }) => {
         </div>
 
         <form onSubmit={handleSubmit} className="modal-form">
-          {/* Profile Photo Section */}
-          <div className="form-section">
-            <label className="form-label">Profile Photo</label>
-            <div className="photo-upload-container">
-              <div className="photo-preview">
-                {photoPreview ? (
-                  <img src={photoPreview} alt="Preview" className="preview-image" />
-                ) : (
-                  <div className="photo-placeholder">
-                    <i className="fa-solid fa-image"></i>
+          {dependentsList.map((dependent, index) => (
+            <div key={dependent.id} className="dependent-form-section">
+              <div className="dependent-header">
+                <h3 className="dependent-title">Dependent {index + 1}</h3>
+                {dependentsList.length > 1 && (
+                  <button
+                    type="button"
+                    className="remove-dependent-btn"
+                    onClick={() => removeDependent(index)}
+                    title="Remove this dependent"
+                  >
+                    <i className="fa-solid fa-times"></i>
+                  </button>
+                )}
+              </div>
+
+              {/* Profile Photo Section */}
+              <div className="form-section">
+                <label className="form-label">Profile Photo</label>
+                <div className="photo-upload-container">
+                  <div className="photo-preview">
+                    {photoPreview[dependent.id] ? (
+                      <img src={photoPreview[dependent.id]} alt="Preview" className="preview-image" />
+                    ) : (
+                      <div className="photo-placeholder">
+                        <i className="fa-solid fa-image"></i>
+                      </div>
+                    )}
                   </div>
-                )}
+                  <div className="photo-actions">
+                    <label className="upload-btn">
+                      <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/svg+xml"
+                        onChange={(e) => handlePhotoUpload(index, e)}
+                        hidden
+                      />
+                      Upload New
+                    </label>
+                    {photoPreview[dependent.id] && (
+                      <button
+                        type="button"
+                        className="remove-btn"
+                        onClick={() => handleRemovePhoto(index)}
+                      >
+                        Remove
+                      </button>
+                    )}
+                    <p className="photo-info">
+                      Your Image should Below 4 MB, Accepted format jpg,png,svg
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="photo-actions">
-                <label className="upload-btn">
+
+              {/* Name Fields Row */}
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">
+                    First Name <span className="required">*</span>
+                  </label>
                   <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/svg+xml"
-                    onChange={handlePhotoUpload}
-                    hidden
+                    type="text"
+                    name="first_Name"
+                    value={dependent.first_Name}
+                    onChange={(e) => handleInputChange(index, e)}
+                    className="form-input"
+                    required
                   />
-                  Upload New
-                </label>
-                {photoPreview && (
-                  <button
-                    type="button"
-                    className="remove-btn"
-                    onClick={handleRemovePhoto}
-                  >
-                    Remove
-                  </button>
-                )}
-                <p className="photo-info">
-                  Your Image should Below 4 MB, Accepted format jpg,png,svg
-                </p>
+                </div>
+                <div className="form-group">
+                  <label className="form-label">
+                    Middle Name
+                  </label>
+                  <input
+                    type="text"
+                    name="middle_Name"
+                    value={dependent.middle_Name}
+                    onChange={(e) => handleInputChange(index, e)}
+                    className="form-input"
+                    placeholder="Optional"
+                  />
+                </div>
               </div>
-            </div>
-          </div>
 
-          {/* Name and Relationship Row */}
-          <div className="form-row">
-            <div className="form-group">
-              <label className="form-label">
-                Name <span className="required">*</span>
-              </label>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleInputChange}
-                className="form-input"
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label className="form-label">
-                Relationship <span className="required">*</span>
-              </label>
-              <input
-                type="text"
-                name="relationship"
-                value={formData.relationship}
-                onChange={handleInputChange}
-                className="form-input"
-                placeholder="e.g., Mother, Father, Brother"
-                required
-              />
-            </div>
-          </div>
+              {/* Last Name and Age Row */}
+              <div className="form-row">
+                <div className="form-group">
+                  <label className="form-label">
+                    Last Name <span className="required">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="last_Name"
+                    value={dependent.last_Name}
+                    onChange={(e) => handleInputChange(index, e)}
+                    className="form-input"
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">
+                    Age <span className="required">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    name="age"
+                    value={dependent.age}
+                    onChange={(e) => handleInputChange(index, e)}
+                    className="form-input"
+                    placeholder="Enter age"
+                    min="0"
+                    max="150"
+                    required
+                  />
+                </div>
+              </div>
 
-          {/* Date of Birth and Gender Row */}
-          <div className="form-row">
-            <div className="form-group">
-              <label className="form-label">
-                Date of Birth <span className="required">*</span>
-              </label>
-              <div className="date-input-container">
-                <input
-                  type="date"
-                  name="dateOfBirth"
-                  value={formData.dateOfBirth}
-                  onChange={handleInputChange}
-                  className="form-input date-input"
-                  required
-                />
-                <i className="fa-solid fa-calendar date-icon"></i>
-              </div>
-            </div>
-            <div className="form-group">
-              <label className="form-label">
-                Select Gender <span className="required">*</span>
-              </label>
-              <div className="gender-buttons">
-                {['Male', 'Female', 'Others'].map(gender => (
-                  <button
-                    key={gender}
-                    type="button"
-                    className={`gender-btn ${formData.gender === gender ? 'active' : ''}`}
-                    onClick={() => handleGenderSelect(gender)}
+              {/* Relationship Row */}
+              <div className="form-row">
+                <div className="form-group full-width">
+                  <label className="form-label">
+                    Relationship <span className="required">*</span>
+                  </label>
+                  <select
+                    name="relationshipID"
+                    value={dependent.relationshipID}
+                    onChange={(e) => handleRelationshipChange(index, e)}
+                    className="form-input"
+                    required
                   >
-                    {gender}
-                  </button>
-                ))}
+                    <option value="">Select Relationship</option>
+                    {relationshipOptions.map(option => (
+                      <option key={option.id} value={option.id}>
+                        {option.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
+
+              {/* Separator between dependents */}
+              {index < dependentsList.length - 1 && <div className="dependent-separator"></div>}
             </div>
+          ))}
+
+          {/* Add Another Dependent Button */}
+          <div className="add-dependent-section">
+            <button
+              type="button"
+              className="add-dependent-btn"
+              onClick={addNewDependent}
+            >
+              <i className="fa-solid fa-plus"></i>
+              Add Another Dependent
+            </button>
           </div>
 
           {/* Form Actions */}
@@ -232,7 +380,7 @@ const AddDependantModal = ({ isOpen, onClose, onAddDependant }) => {
               Cancel
             </button>
             <button type="submit" className="submit-btn">
-              Add Dependant
+              Add {dependentsList.length} Dependent{dependentsList.length > 1 ? 's' : ''}
             </button>
           </div>
         </form>

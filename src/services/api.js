@@ -62,4 +62,9 @@ export const getPatientDependants = (id) => api.get(`/Patients/${id}/dependants`
 export const getPatientMedicalRecords = (id) => api.get(`/Patients/${id}/medical-records`);
 export const getPatientPrescriptions = (id) => api.get(`/Patients/${id}/prescriptions`);
 
+// Dependents APIs
+export const getDependents = () => api.get('/Dependents');
+export const addDependent = (dependentData) => api.post('/Dependents', dependentData);
+export const addBulkDependents = (bulkData) => api.post('/Dependents/bulk', bulkData);
+
 export default api;

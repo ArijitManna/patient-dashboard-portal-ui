@@ -23,7 +23,7 @@ const Dashboard = ({ activeTab, patientData }) => {
       case 'dependants':
         return (
           <div className="main-content-container">
-            <Dependents />
+            <Dependents patientData={patientData} />
           </div>
         );
       default:
@@ -36,7 +36,7 @@ const Dashboard = ({ activeTab, patientData }) => {
               </div>
               <div className="appointments-dependents-column">
                 <Appointments />
-                <Dependents />
+                <Dependents patientData={patientData} />
               </div>
             </div>
           </div>

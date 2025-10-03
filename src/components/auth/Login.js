@@ -57,6 +57,7 @@ const Login = ({ onPageChange }) => {
   const handleOtpSuccess = async (data) => {
     setShowOtpModal(false);
     sessionStorage.setItem('pid', pid);
+    sessionStorage.setItem('userEmail', email); // Store email for user identification
     onPageChange('dashboard');
   };
 
