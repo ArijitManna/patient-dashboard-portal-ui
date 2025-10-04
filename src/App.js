@@ -14,7 +14,11 @@ import './App.css';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [currentPage, setCurrentPage] = useState('login'); // 'dashboard' or 'registration'
+  const [currentPage, setCurrentPage] = useState(() => {
+    const token = localStorage.getItem('authToken');
+    const pid = localStorage.getItem('pid');
+    return token && pid ? 'dashboard' : 'login';
+  }); // 'dashboard' or 'registration'
   const [patientData, setPatientData] = useState(null);
   const [isLoadingPatient, setIsLoadingPatient] = useState(false);
   const [patientError, setPatientError] = useState(null);
