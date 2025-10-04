@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import api from '../../../services/api';
 import { getDependents } from '../../../services/api';
+import Swal from 'sweetalert2';
 import { dependents } from '../../../data/mockData';
 import AddDependantModal from './AddDependantModal';
 import './Dependents.css';
 
 const Dependents = ({ patientData }) => {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editDependant, setEditDependant] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [dependentsList, setDependentsList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -63,26 +67,75 @@ const Dependents = ({ patientData }) => {
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false);
+  setIsModalOpen(false);
+  setIsEditModalOpen(false);
+  setEditDependant(null);
   };
 
-  const handleToggleActive = (id) => {
-    setDependentsList(prev => 
-      prev.map(dep => 
-        dep.id === id ? { ...dep, isActive: !dep.isActive } : dep
-      )
-    );
+  const handleToggleActive = async (id) => {
+    const dep = dependentsList.find(d => (d.dependent_ID || d.id) === id);
+    if (!dep) return;
+    const newStatus = dep.status === 'True' ? false : true;
+    try {
+      const response = await api.patch(`/Dependents/${id}/status`, {
+        updatedBy: dep.modified_by || dep.created_by || 'system',
+        status: newStatus
+      });
+      setDependentsList(prev =>
+        prev.map(d =>
+          (d.dependent_ID || d.id) === id ? { ...d, status: newStatus ? 'True' : 'False' } : d
+        )
+      );
+      Swal.fire({
+        icon: 'success',
+        title: 'Status Updated',
+        text: newStatus ? 'Dependant activated successfully.' : 'Dependant deactivated successfully.'
+      });
+    } catch (err) {
+      console.error('Failed to update status:', err);
+      // Optionally show error to user
+    }
   };
 
   const handleEdit = (id) => {
-    console.log('Edit dependant:', id);
-    // Add edit functionality here
+    // Fetch all dependents, then filter by id and pass to edit modal
+    getDependents().then(response => {
+      if (response.data && Array.isArray(response.data)) {
+        const foundDependant = response.data.find(dep => dep.dependent_ID === id || dep.id === id);
+        if (foundDependant) {
+          setEditDependant(foundDependant);
+          setIsEditModalOpen(true);
+        } else {
+          console.warn('Dependant not found for edit:', id);
+        }
+      }
+    });
   };
 
   const handleDelete = (id) => {
-    if (window.confirm('Are you sure you want to delete this dependant?')) {
-      setDependentsList(prev => prev.filter(dep => dep.id !== id));
-    }
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'This action will permanently delete the dependant.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const deletedBy = localStorage.getItem('pid') || '';
+          await api.delete(`/Dependents/${id}`, {
+            headers: { 'Content-Type': 'application/json' },
+            data: { deletedBy }
+          });
+          setDependentsList(prev => prev.filter(dep => (dep.dependent_ID || dep.id) !== id));
+          Swal.fire('Deleted!', 'Dependant has been deleted.', 'success');
+        } catch (err) {
+          Swal.fire('Error', 'Failed to delete dependant.', 'error');
+        }
+      }
+    });
   };
 
   const filteredDependents = dependentsList.filter(dependent => {
@@ -164,9 +217,9 @@ const Dependents = ({ patientData }) => {
 
                 <div className="dependant-actions">
                   <button 
-                    className={`toggle-btn ${dependent.isActive !== false ? 'active' : 'inactive'}`}
+                    className={`toggle-btn ${dependent.status === 'True' ? 'active' : 'inactive'}`}
                     onClick={() => handleToggleActive(dependent.dependent_ID || dependent.id)}
-                    title={dependent.isActive !== false ? 'Active' : 'Inactive'}
+                    title={dependent.status === 'True' ? 'Active' : 'Inactive'}
                   >
                     <div className="toggle-switch">
                       <div className="toggle-circle"></div>
@@ -194,10 +247,12 @@ const Dependents = ({ patientData }) => {
       </div>
 
       <AddDependantModal
-        isOpen={isModalOpen}
+        isOpen={isModalOpen || isEditModalOpen}
         onClose={handleCloseModal}
         onAddDependant={handleAddDependant}
         patientData={patientData}
+        editDependant={editDependant}
+        isEdit={isEditModalOpen}
       />
     </div>
   );

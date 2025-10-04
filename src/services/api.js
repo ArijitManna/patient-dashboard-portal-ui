@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:7077/api';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5094/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -21,7 +21,7 @@ api.interceptors.request.use(config => {
   }
   
   // Add JWT token for authenticated requests
-  const token = sessionStorage.getItem('authToken');
+  const token = localStorage.getItem('authToken');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

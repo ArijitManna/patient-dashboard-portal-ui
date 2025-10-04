@@ -27,7 +27,7 @@ function App() {
   }, [currentPage]);
 
   const loadPatientData = async () => {
-    const token = sessionStorage.getItem('authToken');
+  const token = localStorage.getItem('authToken');
     if (!token) {
       setCurrentPage('login');
       return;
@@ -44,8 +44,8 @@ function App() {
       setPatientError('Failed to load patient data');
       if (error.response?.status === 401) {
         // Token expired, redirect to login
-        sessionStorage.removeItem('authToken');
-        sessionStorage.removeItem('pid');
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('pid');
         sessionStorage.removeItem('userEmail');
         setCurrentPage('login');
       }
@@ -55,8 +55,8 @@ function App() {
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem('authToken');
-    sessionStorage.removeItem('pid');
+  localStorage.removeItem('authToken');
+  localStorage.removeItem('pid');
     sessionStorage.removeItem('userEmail');
     setPatientData(null);
     setCurrentPage('login');

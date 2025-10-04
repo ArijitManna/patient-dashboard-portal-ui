@@ -7,13 +7,11 @@ const Header = ({ onPageChange }) => {
 
   const handleLogout = () => {
     // Clear all tokens and cache
-    sessionStorage.removeItem('authToken');
-    sessionStorage.removeItem('pid');
     localStorage.removeItem('authToken');
     localStorage.removeItem('pid');
     
     // Clear any other cached data
-    sessionStorage.clear();
+      localStorage.clear();
     
     console.log('User logged out - all tokens cleared');
     

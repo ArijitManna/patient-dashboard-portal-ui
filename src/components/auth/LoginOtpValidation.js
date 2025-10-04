@@ -55,7 +55,7 @@ const LoginOtpValidation = ({ pid, onSuccess, onClose, onResendOtp }) => {
       if (response.status === 200 && response.data.success) {
         // Store JWT token from response
         if (response.data.token) {
-          sessionStorage.setItem('authToken', response.data.token);
+          localStorage.setItem('authToken', response.data.token);
           console.log('JWT token stored:', response.data.token);
         }
         onSuccess(response.data);
