@@ -1,6 +1,15 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5094/api';
+// Configure environment-aware base URLs
+// You can override by setting REACT_APP_API_BASE_URL (takes highest precedence),
+// or set REACT_APP_API_BASE_URL_DEV / REACT_APP_API_BASE_URL_PROD for explicit dev/prod values.
+const DEFAULT_DEV_API = 'http://localhost:5094/api';
+const DEFAULT_PROD_API = 'http://198.38.81.123:9003/api';
+
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
+  || (process.env.NODE_ENV === 'production'
+    ? (process.env.REACT_APP_API_BASE_URL_PROD || DEFAULT_PROD_API)
+    : (process.env.REACT_APP_API_BASE_URL_DEV || DEFAULT_DEV_API));
 
 const api = axios.create({
   baseURL: API_BASE_URL,

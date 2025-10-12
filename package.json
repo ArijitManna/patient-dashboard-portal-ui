@@ -21,6 +21,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "publish": "npm run build && ./scripts/copy-build-to-publish.sh",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

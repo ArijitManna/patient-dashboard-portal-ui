@@ -1,6 +1,13 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:7077/api';
+// Configure environment-aware base URL for email API
+const DEFAULT_DEV_API = 'http://localhost:5094/api';
+const DEFAULT_PROD_API = 'http://198.38.81.123:9003/api';
+
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
+  || (process.env.NODE_ENV === 'production'
+    ? (process.env.REACT_APP_API_BASE_URL_PROD || DEFAULT_PROD_API)
+    : (process.env.REACT_APP_API_BASE_URL_DEV || DEFAULT_DEV_API));
 
 // Email service for sending OTP emails using the backend API
 export const sendOtpEmail = async (email, otp, patientName = 'there', type = 'registration') => {
