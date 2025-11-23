@@ -3,6 +3,7 @@ import HealthRecords from './HealthRecords/HealthRecords';
 import Notifications from './Notifications/Notifications';
 import Appointments from './Appointments/Appointments';
 import Dependents from './Dependents/Dependents';
+import Vitals from './Vitals/Vitals';
 import './Dashboard.css';
 
 const Dashboard = ({ activeTab, patientData }) => {
@@ -24,6 +25,12 @@ const Dashboard = ({ activeTab, patientData }) => {
         return (
           <div className="main-content-container">
             <Dependents patientData={patientData} />
+          </div>
+        );
+      case 'vitals':
+        return (
+          <div className="main-content-container">
+            <Vitals patientData={patientData} />
           </div>
         );
       default:

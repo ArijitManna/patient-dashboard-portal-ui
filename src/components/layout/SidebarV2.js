@@ -66,6 +66,14 @@ const SidebarV2 = ({ activeTab, setActiveTab, onLogout, patientData, isLoadingPa
           <span>Dependants</span>
         </button>
 
+        <button 
+          className={`v2-item ${activeTab === 'vitals' ? 'active' : ''}`}
+          onClick={() => setActiveTab('vitals')}
+        >
+          <i className="fa-solid fa-heartbeat"></i>
+          <span>Vital Signs</span>
+        </button>
+
         <button className="v2-item" onClick={onLogout}
         >
           <i className="fa-solid fa-sign-out-alt"></i>
