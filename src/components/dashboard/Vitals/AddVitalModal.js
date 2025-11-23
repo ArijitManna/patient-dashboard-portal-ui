@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './AddVitalModal.css';
 
-const AddVitalModal = ({ isOpen, onClose, onSave }) => {
+const AddVitalModal = ({ isOpen, onClose, onSave, patientData, dependents }) => {
   const [formData, setFormData] = useState({
+    personId: 'patient',
     heartRate: '',
     temperature: '',
     spo2: '',
@@ -101,7 +102,7 @@ const AddVitalModal = ({ isOpen, onClose, onSave }) => {
     e.preventDefault();
     
     // Basic validation
-    const requiredFields = ['heartRate', 'temperature', 'spo2', 'sysBP', 'diaBP', 'glucose', 'weight', 'height'];
+    const requiredFields = ['personId', 'heartRate', 'temperature', 'spo2', 'sysBP', 'diaBP', 'glucose', 'weight', 'height'];
     const missingFields = requiredFields.filter(field => !formData[field]);
     
     if (missingFields.length > 0) {
@@ -109,8 +110,26 @@ const AddVitalModal = ({ isOpen, onClose, onSave }) => {
       return;
     }
 
+    // Get person information
+    let personName, personType, recordedBy;
+    
+    if (formData.personId === 'patient') {
+      personName = patientData?.patientFullName || 'Self';
+      personType = 'Patient';
+      recordedBy = 'Self-reported';
+    } else {
+      const dependent = dependents.find(dep => dep.id === formData.personId);
+      personName = dependent ? dependent.name : 'Unknown';
+      personType = dependent ? dependent.relationship : 'Unknown';
+      recordedBy = 'Recorded by family member';
+    }
+
     // Convert strings to numbers for saving
     const vitalData = {
+      personId: formData.personId,
+      personName,
+      personType,
+      recordedBy,
       heartRate: parseInt(formData.heartRate),
       temperature: parseFloat(formData.temperature),
       spo2: parseInt(formData.spo2),
@@ -127,6 +146,7 @@ const AddVitalModal = ({ isOpen, onClose, onSave }) => {
 
   const handleReset = () => {
     setFormData({
+      personId: 'patient',
       heartRate: '',
       temperature: '',
       spo2: '',
@@ -165,6 +185,25 @@ const AddVitalModal = ({ isOpen, onClose, onSave }) => {
           <form onSubmit={handleSubmit} className="vital-form">
             <div className="form-section">
               <div className="row g-3">
+                
+                {/* Person Selection */}
+                <div className="col-12">
+                  <label className="form-label fw-bold">Recording vitals for <span className="required">*</span></label>
+                  <select
+                    className="form-control"
+                    name="personId"
+                    value={formData.personId}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="patient">{patientData?.patientFullName || 'Self'} (Patient)</option>
+                    {dependents && dependents.map(dep => (
+                      <option key={dep.id} value={dep.id}>
+                        {dep.name} ({dep.relationship})
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 
                 {/* Heart Rate */}
                 <div className="col-md-4">

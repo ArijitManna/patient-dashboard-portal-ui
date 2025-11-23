@@ -7,8 +7,9 @@ const Vitals = ({ patientData }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [vitalsList, setVitalsList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedPerson, setSelectedPerson] = useState('all');
 
-  // Dummy data for vitals
+  // Dummy data for vitals - includes patient and dependents
   const dummyVitals = [
     {
       id: 1,
@@ -23,22 +24,28 @@ const Vitals = ({ patientData }) => {
       weight: 70.5,
       height: 175,
       bmi: 23.0,
-      recordedBy: 'Dr. Smith'
+      personId: 'patient',
+      personName: patientData?.patientFullName || 'Self',
+      personType: 'Patient',
+      recordedBy: 'Self-reported'
     },
     {
       id: 2,
       date: '2025-11-22',
       time: '02:15 PM',
-      heartRate: 85,
-      temperature: 37.1,
-      spo2: 96,
-      sysBP: 135,
-      diaBP: 85,
-      glucose: 110,
-      weight: 70.2,
-      height: 175,
-      bmi: 22.9,
-      recordedBy: 'Nurse Johnson'
+      heartRate: 90,
+      temperature: 37.0,
+      spo2: 97,
+      sysBP: 110,
+      diaBP: 70,
+      glucose: 85,
+      weight: 25.5,
+      height: 120,
+      bmi: 17.7,
+      personId: 'dep1',
+      personName: 'Sarah Johnson',
+      personType: 'Daughter',
+      recordedBy: 'Recorded by parent'
     },
     {
       id: 3,
@@ -53,8 +60,35 @@ const Vitals = ({ patientData }) => {
       weight: 70.0,
       height: 175,
       bmi: 22.9,
-      recordedBy: 'Dr. Wilson'
+      personId: 'patient',
+      personName: patientData?.patientFullName || 'Self',
+      personType: 'Patient',
+      recordedBy: 'Self-reported'
+    },
+    {
+      id: 4,
+      date: '2025-11-20',
+      time: '06:20 PM',
+      heartRate: 75,
+      temperature: 36.9,
+      spo2: 98,
+      sysBP: 125,
+      diaBP: 80,
+      glucose: 102,
+      weight: 65.2,
+      height: 168,
+      bmi: 23.1,
+      personId: 'dep2',
+      personName: 'Maria Johnson',
+      personType: 'Spouse',
+      recordedBy: 'Recorded by spouse'
     }
+  ];
+
+  // Dummy dependents data (in real app, this would come from API)
+  const dummyDependents = [
+    { id: 'dep1', name: 'Sarah Johnson', relationship: 'Daughter', age: 8 },
+    { id: 'dep2', name: 'Maria Johnson', relationship: 'Spouse', age: 32 }
   ];
 
   useEffect(() => {
@@ -75,7 +109,7 @@ const Vitals = ({ patientData }) => {
         hour: '2-digit', 
         minute: '2-digit' 
       }),
-      recordedBy: 'Current User'
+      recordedBy: 'Self-reported'
     };
     setVitalsList([vital, ...vitalsList]);
     setIsModalOpen(false);
@@ -119,10 +153,15 @@ const Vitals = ({ patientData }) => {
     }
   };
 
-  const filteredVitals = vitalsList.filter(vital =>
-    vital.date.includes(searchTerm) ||
-    vital.recordedBy.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredVitals = vitalsList.filter(vital => {
+    const matchesSearch = vital.date.includes(searchTerm) ||
+                         vital.personName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         vital.recordedBy.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesPerson = selectedPerson === 'all' || vital.personId === selectedPerson;
+    
+    return matchesSearch && matchesPerson;
+  });
 
   if (isLoading) {
     return (
@@ -158,10 +197,28 @@ const Vitals = ({ patientData }) => {
           <i className="fa-solid fa-search"></i>
           <input
             type="text"
-            placeholder="Search by date or recorded by..."
+            placeholder="Search by date, person name..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
+        </div>
+        
+        <div className="person-filter">
+          <label htmlFor="personSelect">Filter by person:</label>
+          <select 
+            id="personSelect"
+            value={selectedPerson} 
+            onChange={(e) => setSelectedPerson(e.target.value)}
+            className="form-select"
+          >
+            <option value="all">All Family Members</option>
+            <option value="patient">{patientData?.patientFullName || 'Self'} (Patient)</option>
+            {dummyDependents.map(dep => (
+              <option key={dep.id} value={dep.id}>
+                {dep.name} ({dep.relationship})
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -186,9 +243,15 @@ const Vitals = ({ patientData }) => {
                   <span className="vital-date">{vital.date}</span>
                   <span className="vital-time">{vital.time}</span>
                 </div>
-                <span className="vital-recorded-by">
-                  Recorded by: {vital.recordedBy}
-                </span>
+                <div className="vital-person-info">
+                  <span className="vital-person-name">
+                    <i className="fa-solid fa-user me-1"></i>
+                    {vital.personName} ({vital.personType})
+                  </span>
+                  <span className="vital-recorded-by">
+                    {vital.recordedBy}
+                  </span>
+                </div>
               </div>
               
               <div className="vital-metrics">
@@ -264,6 +327,8 @@ const Vitals = ({ patientData }) => {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           onSave={handleAddVital}
+          patientData={patientData}
+          dependents={dummyDependents}
         />
       )}
     </div>
