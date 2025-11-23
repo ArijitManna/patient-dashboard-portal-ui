@@ -90,6 +90,13 @@
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
+.form-select:disabled,
+.form-control:disabled {
+  background-color: #f8f9fa;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .vitals-list {
   display: flex;
   flex-direction: column;
@@ -241,6 +248,13 @@
 .empty-state p {
   margin-bottom: 30px;
   font-size: 16px;
+}
+
+.person-filter small,
+.col-12 small {
+  display: block;
+  margin-top: 5px;
+  font-size: 11px;
 }
 
 /* Responsive Design */

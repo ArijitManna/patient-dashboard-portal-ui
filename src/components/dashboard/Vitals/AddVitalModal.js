@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './AddVitalModal.css';
 
-const AddVitalModal = ({ isOpen, onClose, onSave, patientData, dependents }) => {
+const AddVitalModal = ({ isOpen, onClose, onSave, patientData, dependents, getRelationshipName, dependentsLoading }) => {
   const [formData, setFormData] = useState({
     personId: 'patient',
     heartRate: '',
@@ -118,9 +118,21 @@ const AddVitalModal = ({ isOpen, onClose, onSave, patientData, dependents }) => 
       personType = 'Patient';
       recordedBy = 'Self-reported';
     } else {
-      const dependent = dependents.find(dep => dep.id === formData.personId);
-      personName = dependent ? dependent.name : 'Unknown';
-      personType = dependent ? dependent.relationship : 'Unknown';
+      const dependent = dependents.find(dep => 
+        (dep.dependent_ID || dep.id) === formData.personId
+      );
+      if (dependent) {
+        // Handle both API data structure and mock data structure
+        personName = dependent.first_Name 
+          ? `${dependent.first_Name} ${dependent.middle_Name ? dependent.middle_Name + ' ' : ''}${dependent.last_Name}`
+          : (dependent.dependent_name || dependent.name || 'Unknown');
+        personType = getRelationshipName ? 
+          getRelationshipName(dependent.relationshipID || dependent.relationship_id) : 
+          (dependent.relationship || 'Unknown');
+      } else {
+        personName = 'Unknown';
+        personType = 'Unknown';
+      }
       recordedBy = 'Recorded by family member';
     }
 
@@ -195,14 +207,28 @@ const AddVitalModal = ({ isOpen, onClose, onSave, patientData, dependents }) => 
                     value={formData.personId}
                     onChange={handleInputChange}
                     required
+                    disabled={dependentsLoading}
                   >
                     <option value="patient">{patientData?.patientFullName || 'Self'} (Patient)</option>
-                    {dependents && dependents.map(dep => (
-                      <option key={dep.id} value={dep.id}>
-                        {dep.name} ({dep.relationship})
-                      </option>
-                    ))}
+                    {dependents && dependents.map(dep => {
+                      const depId = dep.dependent_ID || dep.id;
+                      // Handle both API data structure and mock data structure
+                      const depName = dep.first_Name 
+                        ? `${dep.first_Name} ${dep.middle_Name ? dep.middle_Name + ' ' : ''}${dep.last_Name}`
+                        : (dep.dependent_name || dep.name || 'Unknown');
+                      const relationshipName = getRelationshipName ? 
+                        getRelationshipName(dep.relationshipID || dep.relationship_id) : 
+                        (dep.relationship || 'Unknown');
+                      return (
+                        <option key={depId} value={depId}>
+                          {depName} ({relationshipName})
+                        </option>
+                      );
+                    })}
                   </select>
+                  {dependentsLoading && (
+                    <small className="text-muted">Loading family members...</small>
+                  )}
                 </div>
                 
                 {/* Heart Rate */}

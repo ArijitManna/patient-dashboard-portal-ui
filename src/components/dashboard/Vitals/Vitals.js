@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getDependents } from '../../../services/api';
 import AddVitalModal from './AddVitalModal';
 import './Vitals.css';
 
@@ -8,6 +9,9 @@ const Vitals = ({ patientData }) => {
   const [vitalsList, setVitalsList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedPerson, setSelectedPerson] = useState('all');
+  const [dependentsList, setDependentsList] = useState([]);
+  const [dependentsLoading, setDependentsLoading] = useState(false);
+  const [dependentsError, setDependentsError] = useState(null);
 
   // Dummy data for vitals - includes patient and dependents
   const dummyVitals = [
@@ -42,10 +46,10 @@ const Vitals = ({ patientData }) => {
       weight: 25.5,
       height: 120,
       bmi: 17.7,
-      personId: 'dep1',
-      personName: 'Sarah Johnson',
+      personId: 'dummy-dep1',
+      personName: 'Sample Dependent 1',
       personType: 'Daughter',
-      recordedBy: 'Recorded by parent'
+      recordedBy: 'Recorded by family member'
     },
     {
       id: 3,
@@ -78,27 +82,62 @@ const Vitals = ({ patientData }) => {
       weight: 65.2,
       height: 168,
       bmi: 23.1,
-      personId: 'dep2',
-      personName: 'Maria Johnson',
+      personId: 'dummy-dep2',
+      personName: 'Sample Dependent 2',
       personType: 'Spouse',
-      recordedBy: 'Recorded by spouse'
+      recordedBy: 'Recorded by family member'
     }
   ];
 
-  // Dummy dependents data (in real app, this would come from API)
-  const dummyDependents = [
-    { id: 'dep1', name: 'Sarah Johnson', relationship: 'Daughter', age: 8 },
-    { id: 'dep2', name: 'Maria Johnson', relationship: 'Spouse', age: 32 }
+  // Relationship mapping (should match the one in Dependents component)
+  const relationshipOptions = [
+    { id: 1, name: 'Father' },
+    { id: 2, name: 'Mother' },
+    { id: 3, name: 'Brother' },
+    { id: 4, name: 'Sister' },
+    { id: 5, name: 'Spouse' },
+    { id: 6, name: 'Son' },
+    { id: 7, name: 'Daughter' },
+    { id: 8, name: 'Grandfather' },
+    { id: 9, name: 'Grandmother' },
+    { id: 10, name: 'Other' }
   ];
 
+  const getRelationshipName = (relationshipID) => {
+    const relationship = relationshipOptions.find(rel => rel.id === relationshipID);
+    return relationship ? relationship.name : 'Unknown';
+  };
+
+  // Load dependents and vitals on component mount
   useEffect(() => {
-    // Simulate loading
+    loadDependents();
+    loadVitals();
+  }, []);
+
+  const loadDependents = async () => {
+    try {
+      setDependentsLoading(true);
+      const response = await getDependents();
+      setDependentsList(response.data || []);
+      setDependentsError(null);
+    } catch (error) {
+      console.error('Error loading dependents:', error);
+      setDependentsError('Failed to load dependents');
+      // Fallback to empty list
+      setDependentsList([]);
+    } finally {
+      setDependentsLoading(false);
+    }
+  };
+
+  const loadVitals = () => {
+    // Simulate loading vitals (replace with real API call later)
     setIsLoading(true);
     setTimeout(() => {
       setVitalsList(dummyVitals);
       setIsLoading(false);
     }, 500);
-  }, []);
+  };
 
   const handleAddVital = (newVital) => {
     const vital = {
@@ -210,15 +249,30 @@ const Vitals = ({ patientData }) => {
             value={selectedPerson} 
             onChange={(e) => setSelectedPerson(e.target.value)}
             className="form-select"
+            disabled={dependentsLoading}
           >
             <option value="all">All Family Members</option>
             <option value="patient">{patientData?.patientFullName || 'Self'} (Patient)</option>
-            {dummyDependents.map(dep => (
-              <option key={dep.id} value={dep.id}>
-                {dep.name} ({dep.relationship})
-              </option>
-            ))}
+            {dependentsList.map(dep => {
+              const depId = dep.dependent_ID || dep.id;
+              // Handle both API data structure and mock data structure
+              const depName = dep.first_Name 
+                ? `${dep.first_Name} ${dep.middle_Name ? dep.middle_Name + ' ' : ''}${dep.last_Name}`
+                : (dep.dependent_name || dep.name || 'Unknown');
+              const relationshipName = getRelationshipName(dep.relationshipID || dep.relationship_id);
+              return (
+                <option key={depId} value={depId}>
+                  {depName} ({relationshipName})
+                </option>
+              );
+            })}
           </select>
+          {dependentsLoading && (
+            <small className="text-muted">Loading dependents...</small>
+          )}
+          {dependentsError && (
+            <small className="text-danger">Failed to load dependents</small>
+          )}
         </div>
       </div>
 
@@ -328,7 +382,9 @@ const Vitals = ({ patientData }) => {
           onClose={() => setIsModalOpen(false)}
           onSave={handleAddVital}
           patientData={patientData}
-          dependents={dummyDependents}
+          dependents={dependentsList}
+          getRelationshipName={getRelationshipName}
+          dependentsLoading={dependentsLoading}
         />
       )}
     </div>
