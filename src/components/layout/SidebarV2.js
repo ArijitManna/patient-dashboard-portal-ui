@@ -6,7 +6,7 @@ const SidebarV2 = ({ activeTab, setActiveTab, onLogout, patientData, isLoadingPa
     <div className="sidebar-v2">
       <div className="v2-banner">
         <div className="v2-avatar">
-          <img src="https://i.pravatar.cc/160?img=32" alt="Patient Profile" />
+          <img src="/profile.jpg" alt="Patient Profile" />
           <div className="v2-badge">
             <i className="fa-solid fa-check"></i>
           </div>

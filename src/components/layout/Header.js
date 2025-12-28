@@ -81,7 +81,7 @@ const Header = ({ onPageChange }) => {
             </button>
             <div className="user-menu" onClick={toggleDropdown} ref={dropdownRef}>
               <img 
-                src="https://i.pravatar.cc/120?img=32" 
+                src="/profile.jpg" 
                 alt="User Profile" 
                 className="user-avatar"
               />
@@ -89,7 +89,7 @@ const Header = ({ onPageChange }) => {
                 <div className="dropdown-menu">
                   <div className="dropdown-header">
                     <img 
-                      src="https://i.pravatar.cc/120?img=32" 
+                      src="/profile.jpg" 
                       alt="Hendrita Hayes" 
                       className="dropdown-avatar"
                     />
